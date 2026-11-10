@@ -1146,6 +1146,91 @@ html[data-theme="dark"] button.heat-cell:focus-visible {
   outline-offset: 2px;
 }
 
+.heatmap-3d-controls {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.heatmap-3d-control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e4ebe6;
+  border-radius: 6px;
+  background: #fff;
+  color: #52635a;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
+}
+
+.heatmap-3d-control-btn:hover {
+  background: #f0f3f1;
+  border-color: #c4d2c9;
+  color: #2f5942;
+  transform: scale(1.05);
+}
+
+.heatmap-3d-control-btn:active {
+  transform: scale(0.98);
+}
+
+.heatmap-3d-control-btn:focus-visible {
+  outline: 2px solid #38a87d;
+  outline-offset: 2px;
+}
+
+.heatmap-3d-control-btn svg {
+  display: block;
+}
+
+.heatmap-tooltip-3d {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 8px;
+  padding: 8px 11px;
+  background: #17231e;
+  box-shadow: 0 8px 24px rgb(10 25 16 / 24%);
+  color: #f5faf7;
+  font-size: 11px;
+  white-space: nowrap;
+  animation: tooltip-enter 120ms ease-out;
+}
+
+.heatmap-tooltip-3d span {
+  color: #b7c8bd;
+}
+
+.heatmap-tooltip-3d .tooltip-close {
+  margin-left: 8px;
+  padding: 0 4px;
+  background: transparent;
+  border: none;
+  color: #b7c8bd;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.heatmap-tooltip-3d .tooltip-close:hover {
+  color: #f5faf7;
+}
+
+@keyframes tooltip-enter {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .heatmap-scroll-3d {
   max-height: 580px;
   overflow: auto;
@@ -1450,6 +1535,36 @@ html[data-theme="dark"] .heatmap-view-toggle button.is-active {
   color: #7bd5a5;
 }
 
+html[data-theme="dark"] .heatmap-3d-control-btn {
+  border-color: #34443a;
+  background: #1b2620;
+  color: #a0afa5;
+}
+
+html[data-theme="dark"] .heatmap-3d-control-btn:hover {
+  background: #25312a;
+  border-color: #46574c;
+  color: #d3e2d8;
+}
+
+html[data-theme="dark"] .heatmap-tooltip-3d {
+  border-color: #46574c;
+  background: #e8f1eb;
+  color: #17231e;
+}
+
+html[data-theme="dark"] .heatmap-tooltip-3d span {
+  color: #52655a;
+}
+
+html[data-theme="dark"] .heatmap-tooltip-3d .tooltip-close {
+  color: #52655a;
+}
+
+html[data-theme="dark"] .heatmap-tooltip-3d .tooltip-close:hover {
+  color: #17231e;
+}
+
 html[data-theme="dark"] .heatmap-grid-3d .heat-level-0 {
   background: #424a45;
   box-shadow: 2px 2px 0 #303733, 4px 4px 0 #222925;
@@ -1474,6 +1589,13 @@ html[data-theme="dark"] .skeleton-activity {
     gap: 8px;
   }
 
+  .heatmap-3d-controls {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+    order: 2;
+  }
+
   .heatmap-calendar-3d {
     padding: 190px 60px;
   }
@@ -1486,6 +1608,15 @@ html[data-theme="dark"] .skeleton-activity {
 
   .heatmap-controls {
     gap: 6px;
+  }
+
+  .heatmap-3d-controls {
+    gap: 3px;
+  }
+
+  .heatmap-3d-control-btn {
+    width: 28px;
+    height: 28px;
   }
 
   .heatmap-legend {
