@@ -48,7 +48,6 @@ Create a `.env.local` file in the project root:
 
 ```env
 # Required: Kaggle API credentials (server-side only)
-KAGGLE_USERNAME=your_kaggle_username
 KAGGLE_API_TOKEN=your_kaggle_api_token
 
 # Optional: Default username for home page (client-safe)
@@ -56,6 +55,8 @@ NEXT_PUBLIC_USERNAME=your_kaggle_username
 ```
 
 Get your API token from [Kaggle Account Settings](https://www.kaggle.com/settings/account) → "Create New Token".
+
+For Netlify, set `KAGGLE_API_TOKEN` and `NEXT_PUBLIC_USERNAME` in the site environment variables. Do not set `KAGGLE_USERNAME` to the same value as `NEXT_PUBLIC_USERNAME`: the username is public and embedding the same value under a secret variable name can trigger Netlify's secrets scan. `KAGGLE_KEY` is not used by this app. Keep `.env.local` out of Git; if an API token was ever committed, revoke it in Kaggle and create a new one.
 
 ### Development
 

@@ -106,9 +106,11 @@ function normalizeActivities(
 }
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = request.nextUrl;
+
   try {
-    const { searchParams } = new URL(request.url);
-    const username = searchParams.get("username") || process.env.KAGGLE_USERNAME!;
+    const username =
+      searchParams.get("username") || process.env.NEXT_PUBLIC_USERNAME;
 
     if (!username?.trim()) {
       return NextResponse.json(
