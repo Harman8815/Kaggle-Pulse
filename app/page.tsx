@@ -1,12 +1,14 @@
-import Image from "next/image";
 import { Navbar } from "./components/Navbar";
 import { Dashboard } from "./components/Dashboard";
 import { Footer } from "./components/Footer";
+
 export default function Home() {
+  const defaultUsername = process.env.NEXT_PUBLIC_USERNAME || "";
+
   return (
     <>
       <Navbar />
-      <Dashboard />
+      <Dashboard username={defaultUsername} />
       <Footer />
     </>
   );

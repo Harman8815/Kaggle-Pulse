@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Heatmap2D } from "./Heatmap2D";
-import { Heatmap3D, Heatmap3DActions } from "./Heatmap3D";
+import Heatmap3D, { Heatmap3DActions } from "./Heatmap3D";
 import type { HeatmapData } from "./types";
 
 interface HeatmapPanelProps {

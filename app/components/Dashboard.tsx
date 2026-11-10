@@ -13,7 +13,11 @@ import { VisualizationGrid } from "./dashboard/VisualizationGrid";
 import { RecentActivityPanel } from "./dashboard/RecentActivityPanel";
 import { DashboardAttribution } from "./dashboard/DashboardAttribution";
 
-export const Dashboard = () => {
+interface DashboardProps {
+    username?: string;
+}
+
+export const Dashboard = ({ username }: DashboardProps) => {
     const [userData, setUserData] = useState<KaggleUserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -28,6 +32,7 @@ export const Dashboard = () => {
                 setLoading(true);
                 setError(null);
                 const data = await getUserData({
+                    username,
                     limit: 500,
                     sort: "desc",
                     signal: controller.signal,
@@ -46,7 +51,7 @@ export const Dashboard = () => {
 
         fetchData();
         return () => controller.abort();
-    }, []);
+    }, [username]);
 
     const activities = userData?.activities ?? [];
     const sortedActivities = useMemo(

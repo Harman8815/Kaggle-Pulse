@@ -37,6 +37,7 @@ export interface KaggleUserData {
 }
 
 export interface KaggleOptions {
+  username?: string;
   startDate?: string;
   endDate?: string;
   types?: ActivityType[];
@@ -119,9 +120,15 @@ export const getUserData = async (
   options: KaggleOptions = {}
 ): Promise<KaggleUserData> => {
   const config = { ...DEFAULT_OPTIONS, ...options };
+  const { username, ...fetchOptions } = config;
+
+  const url = new URL(API_BASE, window.location.origin);
+  if (username) {
+    url.searchParams.set("username", username);
+  }
 
   const response = await fetch(
-    API_BASE,
+    url.toString(),
     {
       method: "GET",
       headers: {

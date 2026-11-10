@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 const KAGGLE_API = "https://www.kaggle.com/api/v1";
 const KAGGLE_PAGE_SIZE = 100;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+interface CacheEntry {
+  data: any;
+  timestamp: number;
+}
+
+const cache = new Map<string, CacheEntry>();
 
 class KaggleApiError extends Error {
   constructor(readonly status: number) {
@@ -45,7 +53,14 @@ function getCredentials() {
   };
 }
 
-async function fetchKaggle(endpoint: string) {
+async function fetchKaggle(endpoint: string, cacheKey: string) {
+  const now = Date.now();
+  const cached = cache.get(cacheKey);
+
+  if (cached && now - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+
   const response = await fetch(`${KAGGLE_API}/${endpoint}`, {
     headers: getCredentials(),
     cache: "no-store",
@@ -55,7 +70,9 @@ async function fetchKaggle(endpoint: string) {
     throw new KaggleApiError(response.status);
   }
 
-  return response.json();
+  const data = await response.json();
+  cache.set(cacheKey, { data, timestamp: now });
+  return data;
 }
 
 function normalizeActivities(
@@ -88,16 +105,28 @@ function normalizeActivities(
   });
 }
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const username = process.env.KAGGLE_USERNAME!;
+    const { searchParams } = new URL(request.url);
+    const username = searchParams.get("username") || process.env.KAGGLE_USERNAME!;
+
+    if (!username?.trim()) {
+      return NextResponse.json(
+        { error: "Username is required" },
+        { status: 400 }
+      );
+    }
+
+    const cacheKey = `kaggle-${username}`;
 
     const [notebooks, datasets] = await Promise.all([
       fetchKaggle(
-        `kernels/list?user=${encodeURIComponent(username)}&pageSize=${KAGGLE_PAGE_SIZE}`
+        `kernels/list?user=${encodeURIComponent(username)}&pageSize=${KAGGLE_PAGE_SIZE}`,
+        `${cacheKey}-notebooks`
       ),
       fetchKaggle(
-        `datasets/list?user=${encodeURIComponent(username)}&pageSize=${KAGGLE_PAGE_SIZE}`
+        `datasets/list?user=${encodeURIComponent(username)}&pageSize=${KAGGLE_PAGE_SIZE}`,
+        `${cacheKey}-datasets`
       ),
     ]);
 
@@ -120,6 +149,11 @@ export async function GET(_request: NextRequest) {
       profileUrl: `https://www.kaggle.com/${username}`,
       activities,
       stats,
+      cached: false,
+    }, {
+      headers: {
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+      },
     });
   } catch (error) {
     console.error("Kaggle API error:", error);
