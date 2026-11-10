@@ -213,7 +213,7 @@ const Heatmap3D = forwardRef<Heatmap3DActions, Heatmap3DProps>(
                         const x = (weekIndex - heatmap.weeks.length / 2) * (cellSize + gap);
                         labels.push({
                             position: [x, 2, -70],
-                            rotation: [0, 0, 90 * (Math.PI / 180)],
+                            rotation: [-20, 0, 0],
                             label: new Intl.DateTimeFormat("en", { month: "short", timeZone: "UTC" }).format(firstDay),
                         });
                     }
@@ -267,6 +267,7 @@ const Heatmap3D = forwardRef<Heatmap3DActions, Heatmap3DProps>(
                             <MonthLabel3D
                                 key={index}
                                 position={ml.position}
+                                rotation={ml.rotation}
                                 label={ml.label}
                             />
                         ))}
@@ -275,6 +276,7 @@ const Heatmap3D = forwardRef<Heatmap3DActions, Heatmap3DProps>(
                             <DayLabel3D
                                 key={index}
                                 position={[-heatmap.weeks.length / 2 * (cellSize + gap) - 20, 2, dl.z]}
+                                rotation={[0, 0, 0]}
                                 label={dl.label}
                             />
                         ))}
@@ -356,8 +358,8 @@ const HeatmapCell3D = ({
     );
 };
 
-const MonthLabel3D = ({ position, label }: { position: [number, number, number]; label: string }) => (
-    <group position={position}>
+const MonthLabel3D = ({ position, rotation, label }: { position: [number, number, number]; rotation?: [number, number, number]; label: string }) => (
+    <group position={position} rotation={rotation }>
         <mesh>
             <planeGeometry args={[60, 16]} />
             <meshBasicMaterial
@@ -379,8 +381,8 @@ const MonthLabel3D = ({ position, label }: { position: [number, number, number];
     </group>
 );
 
-const DayLabel3D = ({ position, label }: { position: [number, number, number]; label: string }) => (
-    <group position={position}>
+const DayLabel3D = ({ position, rotation, label }: { position: [number, number, number]; rotation?: [number, number, number]; label: string }) => (
+    <group position={position} rotation={rotation }>
         <mesh>
             <planeGeometry args={[30, 14]} />
             <meshBasicMaterial
