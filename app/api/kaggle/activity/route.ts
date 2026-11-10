@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from "next/server";
 
 const KAGGLE_API = "https://www.kaggle.com/api/v1";
@@ -27,25 +26,21 @@ interface KaggleItem {
 function getCredentials() {
   const token = process.env.KAGGLE_API_TOKEN;
   const username = process.env.KAGGLE_USERNAME;
-  const key = process.env.KAGGLE_KEY;
 
-  if (token) {
-    return {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    };
+  if (!token) {
+    throw new Error(
+      "KAGGLE_API_TOKEN is missing; set it to a current API token from your Kaggle account's API settings"
+    );
   }
 
-  if (!username || !key) {
+  if (!username) {
     throw new Error(
-      "Kaggle credentials are missing; set KAGGLE_API_TOKEN or both KAGGLE_USERNAME and KAGGLE_KEY"
+      "KAGGLE_USERNAME is missing; set it to your Kaggle username"
     );
   }
 
   return {
-    Authorization: `Basic ${Buffer.from(
-      `${username}:${key}`
-    ).toString("base64")}`,
+    Authorization: `Bearer ${token}`,
     Accept: "application/json",
   };
 }
@@ -93,19 +88,9 @@ function normalizeActivities(
   });
 }
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ username: string }> }
-) {
+export async function GET(_request: NextRequest) {
   try {
-    const { username } = await params;
-
-    if (!username?.trim()) {
-      return NextResponse.json(
-        { error: "Username is required" },
-        { status: 400 }
-      );
-    }
+    const username = process.env.KAGGLE_USERNAME!;
 
     const [notebooks, datasets] = await Promise.all([
       fetchKaggle(
@@ -123,8 +108,8 @@ export async function GET(
 
     const stats = {
       total: activities.length,
-      notebooks: activities.filter(a => a.type === "Notebook").length,
-      datasets: activities.filter(a => a.type === "Dataset").length,
+      notebooks: activities.filter((a) => a.type === "Notebook").length,
+      datasets: activities.filter((a) => a.type === "Dataset").length,
       models: 0,
       competitions: 0,
       discussions: 0,
@@ -136,7 +121,6 @@ export async function GET(
       activities,
       stats,
     });
-
   } catch (error) {
     console.error("Kaggle API error:", error);
 
@@ -144,7 +128,7 @@ export async function GET(
       return NextResponse.json(
         {
           error:
-            "Kaggle rejected the configured credentials. Set KAGGLE_API_TOKEN to a current API token from your Kaggle account's API settings, or verify your legacy KAGGLE_USERNAME and KAGGLE_KEY values, then restart the server.",
+            "Kaggle rejected the configured credentials. Set KAGGLE_API_TOKEN to a current API token from your Kaggle account's API settings, then restart the server.",
         },
         { status: 502 }
       );

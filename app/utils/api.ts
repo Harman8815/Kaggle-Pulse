@@ -53,7 +53,7 @@ const DEFAULT_OPTIONS: Required<
   includeStats: true,
 };
 
-const API_BASE = "/api/kaggle/users";
+const API_BASE = "/api/kaggle/activity";
 
 const isValidDate = (value: string): boolean =>
   !Number.isNaN(Date.parse(value));
@@ -116,38 +116,12 @@ const calculateStats = (
 });
 
 export const getUserData = async (
-  username: string,
   options: KaggleOptions = {}
 ): Promise<KaggleUserData> => {
-  if (!username.trim()) {
-    throw new Error("Kaggle username is required");
-  }
-
-  if (options.startDate && !isValidDate(options.startDate)) {
-    throw new Error("Invalid start date");
-  }
-
-  if (options.endDate && !isValidDate(options.endDate)) {
-    throw new Error("Invalid end date");
-  }
-
-  if (
-    options.startDate &&
-    options.endDate &&
-    new Date(options.startDate) > new Date(options.endDate)
-  ) {
-    throw new Error("Start date cannot be after end date");
-  }
-
-  if (options.limit !== undefined &&
-      (!Number.isInteger(options.limit) || options.limit < 0)) {
-    throw new Error("Limit must be a non-negative integer");
-  }
-
   const config = { ...DEFAULT_OPTIONS, ...options };
 
   const response = await fetch(
-    `${API_BASE}/${encodeURIComponent(username)}/activity`,
+    API_BASE,
     {
       method: "GET",
       headers: {

@@ -107,7 +107,6 @@ const latestLabel = (activity: KaggleActivity | undefined) =>
     activity ? formatDate(activity.date) : "No activity yet";
 
 export const Dashboard = () => {
-    const username = process.env.NEXT_PUBLIC_USERNAME || "default_username";
     const [userData, setUserData] = useState<KaggleUserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -123,7 +122,7 @@ export const Dashboard = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await getUserData(username, {
+                const data = await getUserData({
                     limit: 500,
                     sort: "desc",
                     signal: controller.signal,
@@ -142,7 +141,7 @@ export const Dashboard = () => {
 
         fetchData();
         return () => controller.abort();
-    }, [username]);
+    }, []);
 
     const activities = userData?.activities ?? [];
     const sortedActivities = useMemo(
@@ -160,7 +159,7 @@ export const Dashboard = () => {
     const maxMonthlyActivity = Math.max(1, ...monthlyActivity.map((month) => month.count));
     const maxTypeCount = Math.max(1, ...typeCounts.map(({ count }) => count));
     const latestActivity = sortedActivities[0];
-    const profileUrl = userData?.profileUrl ?? `https://www.kaggle.com/${username}`;
+    const profileUrl = userData?.profileUrl ?? `https://www.kaggle.com/${userData?.username}`;
 
     return (
         <main className="dashboard-shell">
@@ -324,7 +323,7 @@ export const Dashboard = () => {
                 </section>
 
                 <p className="dashboard-attribution">
-                    Showing public activity for <a href={profileUrl} target="_blank" rel="noreferrer">@{userData?.username ?? username}</a>
+                    Showing public activity for <a href={profileUrl} target="_blank" rel="noreferrer">@{userData?.username}</a>
                 </p>
             </div>
         </main>

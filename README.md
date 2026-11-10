@@ -20,15 +20,14 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Kaggle API credentials
 
-Create a `.env.local` file in the project root with your Kaggle username and either a current API token or legacy API key from your Kaggle account's API settings:
+Create a `.env.local` file in the project root with your Kaggle username and a current API token from your Kaggle account's API settings:
 
 ```text
-NEXT_PUBLIC_USERNAME=your_kaggle_username
 KAGGLE_USERNAME=your_kaggle_username
 KAGGLE_API_TOKEN=your_kaggle_api_token
 ```
 
-For legacy credentials, use `KAGGLE_USERNAME` and `KAGGLE_KEY` instead of `KAGGLE_API_TOKEN`. Keep API tokens and keys private. Restart the Next.js server after changing environment variables. If Kaggle returns 401, generate a fresh API token in Kaggle's API settings.
+Keep API tokens private. Restart the Next.js server after changing environment variables. If Kaggle returns 401, generate a fresh API token in Kaggle's API settings.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
