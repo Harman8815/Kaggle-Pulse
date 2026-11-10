@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import { getUserData } from "../utils/api";
 import type {
     ActivityType,
@@ -106,14 +107,91 @@ const heatLevel = (count: number) => {
 const latestLabel = (activity: KaggleActivity | undefined) =>
     activity ? formatDate(activity.date) : "No activity yet";
 
+const DashboardSkeleton = () => (
+    <main className="dashboard-shell">
+        <div className="ambient-decoration" aria-hidden="true">
+            <span className="ambient-orb ambient-orb-one" />
+            <span className="ambient-orb ambient-orb-two" />
+            <span className="ambient-symbol ambient-symbol-one">✳</span>
+            <span className="ambient-symbol ambient-symbol-two">◇</span>
+            <span className="ambient-symbol ambient-symbol-three">＋</span>
+            <span className="ambient-symbol ambient-symbol-four">⌘</span>
+        </div>
+        <div className="dashboard-container dashboard-skeleton" aria-label="Loading dashboard" role="status">
+            <span className="visually-hidden">Loading your Kaggle activity dashboard…</span>
+            <section className="dashboard-heading">
+                <div className="skeleton-heading">
+                    <span className="skeleton-block skeleton-eyebrow" />
+                    <span className="skeleton-block skeleton-title" />
+                    <span className="skeleton-block skeleton-subtitle" />
+                </div>
+                <span className="skeleton-block skeleton-button" />
+            </section>
+            <section className="stats-grid" aria-hidden="true">
+                {[0, 1, 2, 3].map((item) => (
+                    <div className="stat-card skeleton-card" key={item}>
+                        <span className="skeleton-block skeleton-label" />
+                        <span className="skeleton-block skeleton-number" />
+                        <span className="skeleton-block skeleton-footnote" />
+                    </div>
+                ))}
+            </section>
+            <section className="panel skeleton-panel" aria-hidden="true">
+                <div className="skeleton-block skeleton-label" />
+                <div className="skeleton-heatmap">
+                    {Array.from({ length: 154 }, (_, index) => (
+                        <span className="skeleton-block" key={index} />
+                    ))}
+                </div>
+            </section>
+            <div className="visualization-grid" aria-hidden="true">
+                {[0, 1].map((item) => (
+                    <section className="panel skeleton-panel" key={item}>
+                        <span className="skeleton-block skeleton-label" />
+                        <div className={`skeleton-chart skeleton-chart-${item}`}>
+                            {[38, 68, 46, 88, 57, 75].map((height, index) => (
+                                <span className="skeleton-block" key={index} style={{ height: `${height}%` }} />
+                            ))}
+                        </div>
+                    </section>
+                ))}
+            </div>
+            <section className="panel skeleton-panel" aria-hidden="true">
+                <span className="skeleton-block skeleton-label" />
+                {[0, 1, 2, 3].map((item) => (
+                    <div className="skeleton-activity" key={item}>
+                        <span className="skeleton-block skeleton-avatar" />
+                        <span className="skeleton-block skeleton-activity-title" />
+                        <span className="skeleton-block skeleton-activity-date" />
+                    </div>
+                ))}
+            </section>
+        </div>
+    </main>
+);
+
 export const Dashboard = () => {
     const [userData, setUserData] = useState<KaggleUserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [theme, setTheme] = useState<"light" | "dark">("light");
+    const [heatmapMode, setHeatmapMode] = useState<"2d" | "3d">("2d");
     const [heatmap, setHeatmap] = useState<ReturnType<typeof buildHeatmap> | null>(null);
     const [monthlyActivity, setMonthlyActivity] = useState<
         ReturnType<typeof buildMonthlyActivity>
     >([]);
+
+    useEffect(() => {
+        const savedTheme = window.localStorage.getItem("kaggle-pulse-theme");
+        if (savedTheme === "light" || savedTheme === "dark") {
+            setTheme(savedTheme);
+        }
+    }, []);
+
+    useEffect(() => {
+        document.documentElement.dataset.theme = theme;
+        window.localStorage.setItem("kaggle-pulse-theme", theme);
+    }, [theme]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -161,8 +239,20 @@ export const Dashboard = () => {
     const latestActivity = sortedActivities[0];
     const profileUrl = userData?.profileUrl ?? `https://www.kaggle.com/${userData?.username}`;
 
+    if (loading && !userData) {
+        return <DashboardSkeleton />;
+    }
+
     return (
         <main className="dashboard-shell">
+            <div className="ambient-decoration" aria-hidden="true">
+                <span className="ambient-orb ambient-orb-one" />
+                <span className="ambient-orb ambient-orb-two" />
+                <span className="ambient-symbol ambient-symbol-one">✳</span>
+                <span className="ambient-symbol ambient-symbol-two">◇</span>
+                <span className="ambient-symbol ambient-symbol-three">＋</span>
+                <span className="ambient-symbol ambient-symbol-four">⌘</span>
+            </div>
             <div className="dashboard-container">
                 <section className="dashboard-heading">
                     <div>
@@ -172,9 +262,21 @@ export const Dashboard = () => {
                             A snapshot of the work you have shared with the Kaggle community.
                         </p>
                     </div>
-                    <a className="profile-link" href={profileUrl} target="_blank" rel="noreferrer">
-                        View Kaggle profile <span aria-hidden="true">↗</span>
-                    </a>
+                    <div className="dashboard-actions">
+                        <button
+                            aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+                            aria-pressed={theme === "dark"}
+                            className="theme-toggle"
+                            onClick={() => setTheme((current) => current === "light" ? "dark" : "light")}
+                            type="button"
+                        >
+                            <span className="theme-toggle-icon" aria-hidden="true">{theme === "light" ? "☾" : "☀"}</span>
+                            <span>{theme === "light" ? "Dark mode" : "Light mode"}</span>
+                        </button>
+                        <a className="profile-link" href={profileUrl} target="_blank" rel="noreferrer">
+                            View Kaggle profile <span aria-hidden="true">↗</span>
+                        </a>
+                    </div>
                 </section>
 
                 {error && (
@@ -213,39 +315,79 @@ export const Dashboard = () => {
                             <h2>Contribution activity</h2>
                             <p>{loading ? "Loading activity history…" : `${heatmap?.total ?? 0} activities over the last year`}</p>
                         </div>
-                        <div className="heatmap-legend" aria-label="Less to more activity">
-                            <span>Less</span>
-                            {[0, 1, 2, 3, 4].map((level) => <i key={level} className={`heat-cell heat-level-${level}`} />)}
-                            <span>More</span>
+                        <div className="heatmap-controls">
+                            <div className="heatmap-view-toggle" role="group" aria-label="Heatmap view">
+                                <button
+                                    aria-pressed={heatmapMode === "2d"}
+                                    className={heatmapMode === "2d" ? "is-active" : ""}
+                                    onClick={() => setHeatmapMode("2d")}
+                                    type="button"
+                                >
+                                    2D
+                                </button>
+                                <button
+                                    aria-pressed={heatmapMode === "3d"}
+                                    className={heatmapMode === "3d" ? "is-active" : ""}
+                                    onClick={() => setHeatmapMode("3d")}
+                                    type="button"
+                                >
+                                    3D
+                                </button>
+                            </div>
+                            {heatmapMode === "2d" && (
+                                <div className="heatmap-legend" aria-label="Less to more activity">
+                                    <span>Less</span>
+                                    {[0, 1, 2, 3, 4].map((level) => <i key={level} className={`heat-cell heat-level-${level}`} />)}
+                                    <span>More</span>
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <div className="heatmap-scroll">
-                        <div className="heatmap-months" style={{ gridTemplateColumns: `repeat(${heatmap?.weeks.length ?? 0}, 12px)` }}>
-                            {(heatmap?.weeks ?? []).map((week, index) => {
-                                const firstDay = week[0]?.date;
-                                const previous = heatmap?.weeks[index - 1]?.[0]?.date;
-                                const showLabel = firstDay && (!previous || firstDay.getUTCMonth() !== previous.getUTCMonth());
-                                return <span key={index}>{showLabel ? new Intl.DateTimeFormat("en", { month: "short", timeZone: "UTC" }).format(firstDay) : ""}</span>;
-                            })}
-                        </div>
-                        <div className="heatmap-body">
-                            <div className="weekday-labels" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
-                                <div className="heatmap-grid" style={{ gridTemplateColumns: `repeat(${heatmap?.weeks.length ?? 0}, 12px)` }}>
-                                    {(heatmap?.weeks ?? []).map((week, weekIndex) => (
-                                    <div className="heatmap-week" key={weekIndex}>
-                                        {week.map(({ date, count }) => (
-                                            <span
-                                                aria-label={`${count} ${count === 1 ? "activity" : "activities"} on ${formatDate(date.toISOString())}`}
-                                                className={`heat-cell heat-level-${heatLevel(count)}`}
-                                                key={dateKey(date)}
-                                                title={`${count} ${count === 1 ? "activity" : "activities"} · ${formatDate(date.toISOString())}`}
-                                            />
+                    <Tooltip.Provider delayDuration={150}>
+                        <div className={`heatmap-scroll ${heatmapMode === "3d" ? "heatmap-scroll-3d" : ""}`}>
+                            <div className={`heatmap-calendar ${heatmapMode === "3d" ? "heatmap-calendar-3d" : ""}`}>
+                                <div className="heatmap-months" style={{ gridTemplateColumns: `repeat(${heatmap?.weeks.length ?? 0}, 12px)` }}>
+                                    {(heatmap?.weeks ?? []).map((week, index) => {
+                                        const firstDay = week[0]?.date;
+                                        const previous = heatmap?.weeks[index - 1]?.[0]?.date;
+                                        const showLabel = firstDay && (!previous || firstDay.getUTCMonth() !== previous.getUTCMonth());
+                                        return <span key={index}>{showLabel ? new Intl.DateTimeFormat("en", { month: "short", timeZone: "UTC" }).format(firstDay) : ""}</span>;
+                                    })}
+                                </div>
+                                <div className={`heatmap-body ${heatmapMode === "3d" ? "heatmap-body-3d" : ""}`}>
+                                    <div className="weekday-labels" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+                                    <div className={`heatmap-grid ${heatmapMode === "3d" ? "heatmap-grid-3d" : ""}`} style={{ gridTemplateColumns: `repeat(${heatmap?.weeks.length ?? 0}, 12px)` }}>
+                                        {(heatmap?.weeks ?? []).map((week, weekIndex) => (
+                                            <div className={`heatmap-week ${heatmapMode === "3d" ? "heatmap-week-3d" : ""}`} key={weekIndex}>
+                                                {week.map(({ date, count }) => {
+                                                    const dateLabel = formatDate(date.toISOString());
+                                                    const activityLabel = `${count} ${count === 1 ? "activity" : "activities"}`;
+                                                    return (
+                                                        <Tooltip.Root key={dateKey(date)}>
+                                                            <Tooltip.Trigger asChild>
+                                                                <button
+                                                                    aria-label={`${activityLabel} on ${dateLabel}`}
+                                                                    className={`heat-cell heat-level-${heatLevel(count)} ${heatmapMode === "3d" ? "heat-cell-3d" : ""}`}
+                                                                    type="button"
+                                                                />
+                                                            </Tooltip.Trigger>
+                                                            <Tooltip.Portal>
+                                                                <Tooltip.Content className="heatmap-tooltip" side="top" sideOffset={7}>
+                                                                    <strong>{activityLabel}</strong>
+                                                                    <span>{dateLabel}</span>
+                                                                    <Tooltip.Arrow className="heatmap-tooltip-arrow" />
+                                                                </Tooltip.Content>
+                                                            </Tooltip.Portal>
+                                                        </Tooltip.Root>
+                                                    );
+                                                })}
+                                            </div>
                                         ))}
                                     </div>
-                                ))}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </Tooltip.Provider>
                 </section>
 
                 <div className="visualization-grid">
