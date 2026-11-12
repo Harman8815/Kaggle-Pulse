@@ -2127,3 +2127,276 @@ html[data-theme="dark"] .skeleton-activity {
 .rhythm-monthly-chart {
   min-height: 140px;
 }
+
+/* Stage 2: Contribution Archetype */
+.archetype-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.archetype-section-heading {
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.archetype-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.archetype-profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.archetype-name {
+  color: #26352d;
+  font-size: 17px;
+  font-weight: 680;
+  letter-spacing: -0.015em;
+}
+
+.archetype-primary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.archetype-primary-label {
+  color: #929e97;
+  font-size: 12px;
+}
+
+.archetype-note {
+  margin: 0;
+  font-size: 13px;
+  color: #929e97;
+}
+
+.confidence-insufficient {
+  background: #f1f3f2;
+  color: #4a5550;
+}
+
+.archetype-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.archetype-distribution-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.archetype-distribution-category {
+  flex: 0 0 auto;
+  color: #6f7d75;
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.archetype-distribution-track {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  background: #edf1ef;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.archetype-distribution-bar {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #4eb889;
+  transition: width 200ms ease;
+}
+
+.archetype-distribution-value {
+  flex: 0 0 auto;
+  color: #46564d;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: right;
+  min-width: 56px;
+}
+
+.archetype-distribution-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #7d8b83;
+}
+
+.archetype-distribution-note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #5f6b66;
+}
+
+.archetype-explanations {
+  display: grid;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.archetype-explanation-item {
+  font-size: 13px;
+  color: #5f6b66;
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.archetype-explanation-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4eb889;
+}
+
+.archetype-coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.archetype-coverage-heading {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #26352d;
+}
+
+.archetype-coverage-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #5f6b66;
+}
+
+.archetype-coverage-category {
+  flex: 0 0 auto;
+  color: #46564d;
+  font-weight: 600;
+}
+
+.archetype-availability-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.archetype-availability-badge.availability-available {
+  background: #e8f5ef;
+  color: #1f6b4c;
+}
+
+.archetype-availability-badge.availability-blocked {
+  background: #f1f3f2;
+  color: #4a5550;
+}
+
+.archetype-availability-badge.availability-needs_collection {
+  background: #fff4e5;
+  color: #8a5a00;
+}
+
+.archetype-coverage-missing {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: #9aa59f;
+}
+
+.archetype-coverage-note {
+  margin: 0;
+  font-size: 13px;
+  color: #929e97;
+}
+
+.archetype-baseline {
+  margin: 0;
+  padding-top: 6px;
+  font-size: 12px;
+  color: #929e97;
+}
+
+.archetype-baseline strong {
+  color: #46564d;
+}
+
+html[data-theme="dark"] .archetype-name {
+  color: #dce7df;
+}
+
+html[data-theme="dark"] .archetype-primary-label,
+html[data-theme="dark"] .archetype-note,
+html[data-theme="dark"] .archetype-distribution-note,
+html[data-theme="dark"] .archetype-coverage-note {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .archetype-distribution-category {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .archetype-distribution-value {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .archetype-distribution-track {
+  background: #2a362f;
+}
+
+html[data-theme="dark"] .archetype-distribution-bar {
+  background: #5bc798;
+}
+
+html[data-theme="dark"] .archetype-distribution-axis {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .archetype-explanation-item {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .archetype-explanation-item::before {
+  background: #5bc798;
+}
+
+html[data-theme="dark"] .archetype-coverage-item {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .archetype-coverage-category {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .archetype-coverage-missing {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .archetype-baseline {
+  color: #87958c;
+}

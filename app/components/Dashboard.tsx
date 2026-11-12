@@ -13,6 +13,8 @@ import { VisualizationGrid } from "./dashboard/VisualizationGrid";
 import { RecentActivityPanel } from "./dashboard/RecentActivityPanel";
 import { DashboardAttribution } from "./dashboard/DashboardAttribution";
 import { buildBehavioralSummary, type AnalyticsWindow } from "../lib/analytics/consistency";
+import { buildContributionArchetype } from "../lib/analytics/archetype";
+import { ArchetypePanel } from "./dashboard/archetype/ArchetypePanel";
 import { BehavioralSummaryPanel } from "./dashboard/consistency/BehavioralSummaryPanel";
 import { ConsistencyPanel } from "./dashboard/consistency/ConsistencyPanel";
 import { BurstinessPanel } from "./dashboard/consistency/BurstinessPanel";
@@ -32,6 +34,7 @@ export const Dashboard = ({ username }: DashboardProps) => {
     const [monthlyActivity, setMonthlyActivity] = useState<MonthlyActivity[]>([]);
     const [analyticsWindow, setAnalyticsWindow] = useState<AnalyticsWindow>("all");
     const [habitsOpen, setHabitsOpen] = useState(true);
+    const [archetypeOpen, setArchetypeOpen] = useState(true);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -78,6 +81,10 @@ export const Dashboard = ({ username }: DashboardProps) => {
     const behavioralSummary = useMemo(
         () => buildBehavioralSummary(activities, analyticsWindow),
         [activities, analyticsWindow],
+    );
+    const archetype = useMemo(
+        () => buildContributionArchetype({ stats: userData?.stats, activities }),
+        [userData, activities],
     );
     const latestActivity = sortedActivities[0];
     const profileUrl = userData?.profileUrl ?? `https://www.kaggle.com/${userData?.username}`;
@@ -159,6 +166,24 @@ export const Dashboard = ({ username }: DashboardProps) => {
                             </div>
                         </div>
                     )}
+                </section>
+
+                <section className="panel rhythm-section archetype-section">
+                    <div className="panel-heading rhythm-section-heading">
+                        <div>
+                            <h2>Contribution archetype</h2>
+                            <p>Participation identity derived from measurable contribution categories.</p>
+                        </div>
+                        <button
+                            type="button"
+                            className="rhythm-collapse-btn"
+                            aria-expanded={archetypeOpen}
+                            onClick={() => setArchetypeOpen((v) => !v)}
+                        >
+                            {archetypeOpen ? "Collapse" : "Expand"}
+                        </button>
+                    </div>
+                    {archetypeOpen && <ArchetypePanel result={archetype} />}
                 </section>
 
                 <VisualizationGrid monthlyActivity={monthlyActivity} typeCounts={typeCounts} />
