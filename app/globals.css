@@ -1829,6 +1829,215 @@ html[data-theme="dark"] .skeleton-activity {
   .heatmap-legend {
     gap: 3px;
   }
+}
+
+.dashboard-tab-navigation {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 2fr);
+  gap: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #e3eae5;
+  border-radius: 12px;
+  padding: 7px;
+  background: rgb(255 255 255 / 84%);
+  box-shadow: 0 4px 18px rgb(29 52 40 / 3%);
+}
+
+.dashboard-tab-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 4px;
+}
+
+.dashboard-tab-group-primary {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.dashboard-tab {
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 10px;
+  background: transparent;
+  color: #64736a;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 640;
+  white-space: nowrap;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.dashboard-tab:hover {
+  background: #f3f7f4;
+  color: #16835d;
+}
+
+.dashboard-tab.is-active {
+  border-color: #d3e8dc;
+  background: #eaf5ee;
+  color: #14724f;
+}
+
+.dashboard-tab:focus-visible,
+.dashboard-tab-panel:focus-visible,
+.dashboard-more-link:focus-visible {
+  outline: 2px solid #38a87d;
+  outline-offset: 2px;
+}
+
+.dashboard-tab-panel {
+  min-width: 0;
+  outline: none;
+}
+
+.dashboard-tab-panel[data-direction="right"] {
+  animation: dashboard-tab-swap-right 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-tab-panel[data-direction="left"] {
+  animation: dashboard-tab-swap-left 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.dashboard-more-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dashboard-more-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 6px 12px;
+  min-height: 96px;
+  border: 1px solid #e6ece8;
+  border-radius: 9px;
+  padding: 15px;
+  color: #26352d;
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.dashboard-more-link:hover {
+  transform: translateY(-2px);
+  border-color: #9db8a8;
+}
+
+.dashboard-more-link strong {
+  font-size: 13px;
+}
+
+.dashboard-more-link > span:nth-child(2) {
+  grid-column: 1 / -1;
+  color: #87948c;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.dashboard-more-link > span:last-child {
+  grid-column: 2;
+  grid-row: 1;
+  color: #21865f;
+}
+
+html[data-theme="dark"] .dashboard-tab-navigation {
+  border-color: #28352e;
+  background: rgb(24 33 28 / 94%);
+}
+
+html[data-theme="dark"] .dashboard-tab {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .dashboard-tab:hover {
+  background: #202e26;
+  color: #78d0a6;
+}
+
+html[data-theme="dark"] .dashboard-tab.is-active {
+  border-color: #315b44;
+  background: #1c3b2d;
+  color: #82d5aa;
+}
+
+html[data-theme="dark"] .dashboard-more-link {
+  border-color: #2a362f;
+  color: #dce7df;
+}
+
+html[data-theme="dark"] .dashboard-more-link:hover {
+  border-color: #567362;
+}
+
+html[data-theme="dark"] .dashboard-more-link > span:nth-child(2) {
+  color: #87958c;
+}
+
+@keyframes dashboard-tab-swap-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes dashboard-tab-swap-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard-tab-navigation {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .dashboard-tab-group,
+  .dashboard-tab-group-primary {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  .dashboard-tab-group + .dashboard-tab-group {
+    border-left: 1px solid #e5ebe7;
+    padding-left: 8px;
+  }
+
+  .dashboard-tab {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  html[data-theme="dark"] .dashboard-tab-group + .dashboard-tab-group {
+    border-color: #2a362f;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-more-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-tab-panel[data-direction="right"],
+  .dashboard-tab-panel[data-direction="left"] {
+    animation: none;
+  }
 
   .heatmap-legend .heat-cell {
     width: 9px;
