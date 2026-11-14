@@ -52,6 +52,11 @@ Both stored as ISO UTC strings. Downstream heatmap/monthly builders depend on `d
 
 ## Known gaps
 
-- No historical snapshots; no freshness tracking beyond TTL.
-- No distinction between "zero contributions" and "data unavailable."
-- No persistence; no repository abstraction.
+- No registration date or profile statistics until profile retrieval is integrated.
+- No models, competitions, or discussions data.
+- No pagination; users with more than 100 notebooks or datasets have incomplete results.
+- On-view and scheduled daily snapshots are implemented through the JSON repository. The protected scheduler endpoint is `POST /api/kaggle/snapshots`, configured with `CRON_SECRET` and `KAGGLE_TRACKED_USERS`.
+- JSON storage requires a durable, shared filesystem. It does not provide production history guarantees on ephemeral/serverless or multi-instance hosts.
+- Followers, rank, tier, registration date, and competition count remain `null` because the configured endpoints do not provide them.
+- Historical growth is reported only when genuine snapshots span the requested interval; existing Kaggle totals are not used to reconstruct earlier values.
+- Fair account-age windows remain unavailable until registration dates and complete historical contribution records can be verified.

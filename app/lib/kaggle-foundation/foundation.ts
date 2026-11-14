@@ -201,33 +201,71 @@ function buildFoundation(
 }
 
 export async function collectSnapshot(
-	username: string
+	username: string,
+	foundation?: KaggleUserFoundation
 ): Promise<Snapshot | null> {
 	const trimmed = username.trim();
 	if (!trimmed) return null;
 
-	const day = new Date().toISOString().slice(0, 10);
+	try {
+		const day = new Date().toISOString().slice(0, 10);
+		const existing = await repository.getSnapshotForDay(trimmed, day);
+		if (existing) {
+			await recordSnapshotAttempt(trimmed);
+			return existing;
+		}
 
-	const existing = await repository.getSnapshotForDay(trimmed, day);
-	if (existing) return existing;
+		const currentFoundation =
+			foundation ?? (await getUserFoundation(trimmed)).foundation;
+		if (currentFoundation.freshness.fetchFailures > 0) {
+			throw new Error(
+				"Snapshot collection was skipped because the available profile data is stale after a failed Kaggle refresh."
+			);
+		}
+		const snapshot: Snapshot = {
+			id: `${trimmed}-${day}`,
+			username: trimmed,
+			timestamp: new Date().toISOString(),
+			day,
+			followers: currentFoundation.profile.followers,
+			rank: currentFoundation.profile.rank,
+			tier: currentFoundation.profile.tier,
+			notebookCount: currentFoundation.availability.notebooks === "available"
+				? currentFoundation.stats.notebooks
+				: null,
+			datasetCount: currentFoundation.availability.datasets === "available"
+				? currentFoundation.stats.datasets
+				: null,
+			competitionCount: currentFoundation.availability.competitions === "available"
+				? currentFoundation.stats.competitions
+				: null,
+		};
 
-	const { foundation } = await getUserFoundation(trimmed);
+		await repository.saveSnapshot(snapshot);
+		await recordSnapshotAttempt(trimmed);
+		return snapshot;
+	} catch (error) {
+		await recordSnapshotAttempt(
+			trimmed,
+			error instanceof Error ? error.message : "Snapshot collection failed"
+		);
+		throw error;
+	}
+}
 
-	const snapshot: Snapshot = {
-		id: `${trimmed}-${day}`,
-		username: trimmed,
-		timestamp: new Date().toISOString(),
-		day,
-		followers: foundation.profile.followers,
-		rank: foundation.profile.rank,
-		tier: foundation.profile.tier,
-		notebookCount: foundation.stats.notebooks,
-		datasetCount: foundation.stats.datasets,
-		competitionCount: foundation.stats.competitions,
-	};
-
-	await repository.saveSnapshot(snapshot);
-	return snapshot;
+async function recordSnapshotAttempt(
+	username: string,
+	errorMessage: string | null = null
+): Promise<void> {
+	const existing = await repository.getFreshness(username);
+	const freshness = existing ?? emptyFreshness(username);
+	await repository.saveFreshness({
+		...freshness,
+		snapshotCollectionFailures:
+			(freshness.snapshotCollectionFailures ?? 0) + (errorMessage ? 1 : 0),
+		lastSnapshotAttempt: new Date().toISOString(),
+		lastSnapshotError: errorMessage,
+	});
 }
 
 export { repository };

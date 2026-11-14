@@ -23,6 +23,16 @@ export async function GET(request: NextRequest) {
 		}
 
 		const { foundation, fromCache } = await getUserFoundation(username.trim());
+		let snapshotCollection: { status: "saved" | "failed"; message?: string };
+		try {
+			await collectSnapshot(username.trim(), foundation);
+			snapshotCollection = { status: "saved" };
+		} catch (error) {
+			const message =
+				error instanceof Error ? error.message : "Snapshot collection failed";
+			console.error(`Kaggle snapshot collection failed for ${username.trim()}:`, error);
+			snapshotCollection = { status: "failed", message };
+		}
 
 		const activities: KaggleActivity[] = foundation.activities.map(
 			(activity) => ({
@@ -56,6 +66,7 @@ export async function GET(request: NextRequest) {
 				activities,
 				stats,
 				cached: fromCache,
+				snapshotCollection,
 				freshness: {
 					lastSuccessfulFetch: foundation.freshness.lastSuccessfulFetch,
 					lastActivityUpdate: foundation.freshness.lastActivityUpdate,

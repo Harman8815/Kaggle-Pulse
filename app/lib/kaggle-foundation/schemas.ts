@@ -59,6 +59,9 @@ export interface DataFreshness {
 	lastActivityUpdate: string | null;
 	lastAnalyticsCalculation: string | null;
 	fetchFailures: number;
+	snapshotCollectionFailures: number;
+	lastSnapshotAttempt: string | null;
+	lastSnapshotError: string | null;
 	incompleteDatasets: string[];
 	cacheExpiresAt: string | null;
 }
@@ -87,9 +90,9 @@ export interface Snapshot {
 	followers: number | null;
 	rank: number | null;
 	tier: string | null;
-	notebookCount: number;
-	datasetCount: number;
-	competitionCount: number;
+	notebookCount: number | null;
+	datasetCount: number | null;
+	competitionCount: number | null;
 }
 
 export interface KaggleUserFoundation {
@@ -105,4 +108,74 @@ export interface KaggleUserFoundation {
 export interface FoundationResult {
 	foundation: KaggleUserFoundation;
 	fromCache: boolean;
+}
+
+// ---- Stage 4: Fair Head-to-Head comparison ----
+
+export type PeriodWindow = "12m" | "24m" | "36m";
+
+export interface PeriodComparison {
+	window: PeriodWindow;
+	label: string;
+	periodStart: string | null;
+	periodEnd: string | null;
+	supported: boolean;
+	reason?: string;
+	metrics: {
+		notebooks: number;
+		datasets: number;
+		models: number;
+		competitions: number;
+		discussions: number;
+		total: number;
+	};
+	activityDensity: number; // contributions per month
+}
+
+export interface TopicOverlapResult {
+	shared: string[];
+	uniqueA: string[];
+	uniqueB: string[];
+	similarity: number; // 0-1 Jaccard similarity
+	complementary: string[];
+}
+
+export interface FairComparison {
+	profileA: KaggleUserProfile;
+	profileB: KaggleUserProfile;
+	registrationDateA: string | null;
+	registrationDateB: string | null;
+	accountAgeDaysA: number | null;
+	accountAgeDaysB: number | null;
+	overlappingPeriodDays: number | null;
+	periodComparisons: PeriodComparison[];
+	topicOverlap: TopicOverlapResult | null;
+	comparisonSummary: string[];
+}
+
+// ---- Stage 5: Personal History Tracker ----
+
+export interface HistoryResult {
+	username: string;
+	snapshots: Snapshot[];
+	growth: {
+		followerGrowth: HistoryGrowth[];
+		notebookGrowth: HistoryGrowth[];
+		datasetGrowth: HistoryGrowth[];
+	};
+	rankHistory: { date: string; rank: number | null }[];
+	tierHistory: { date: string; tier: string | null }[];
+	snapshotCount: number;
+	firstSnapshot: string | null;
+	lastSnapshot: string | null;
+}
+
+export interface HistoryGrowth {
+	period: string;
+	supported: boolean;
+	reason?: string;
+	change: number | null;
+	percent: number | null;
+	from: string | null;
+	to: string | null;
 }

@@ -11,7 +11,7 @@ Implementation source: `app/lib/kaggle-foundation/`
 - `pipeline.ts` — fetch + normalize + store pipeline
 - `foundation.ts` — `getUserFoundation`, `collectSnapshot`, availability report
 
-Data directory: `data/kaggle-foundation/` (gitignored).
+Data directory: `data/kaggle-foundation/` (gitignored). The JSON repository is suitable for local development and persistent, single-instance deployments only. It is not durable across ephemeral/serverless instances; use a persistent volume or implement a database-backed `KaggleRepository` before relying on production history.
 
 ## Data model
 
@@ -41,7 +41,7 @@ Stored per endpoint per username. Never overwritten by normalized data; kept for
 
 ### Snapshot
 
-`Snapshot` — `id` (`${username}-${YYYY-MM-DD}`), `username`, `timestamp`, `day` (UTC), `followers`, `rank`, `tier`, `notebookCount`, `datasetCount`, `competitionCount`. One row per user per day; duplicates prevented.
+`Snapshot` — `id` (`${username}-${YYYY-MM-DD}`), `username`, `timestamp`, `day` (UTC), `followers`, `rank`, `tier`, `notebookCount`, `datasetCount`, `competitionCount`. Fields not provided by the connected Kaggle endpoints are `null`; they are not recorded as zero. One row per user per UTC day; duplicates are prevented.
 
 ### Foundation payload
 
@@ -61,4 +61,18 @@ Repository interface `KaggleRepository` with methods for raw responses, profiles
 
 ## Snapshot collection
 
-`collectSnapshot(username)` writes a daily snapshot row, keyed by UTC day, preventing same-day duplicates. Started in Stage 0 so follower/rank/tier history begins accumulating immediately.
+- Activity dashboard and history requests call `collectSnapshot(username)`, which stores at most one snapshot per UTC day.
+- `POST /api/kaggle/snapshots` supports an external daily scheduler. Configure `CRON_SECRET` and a comma-separated `KAGGLE_TRACKED_USERS`, then send `Authorization: Bearer <CRON_SECRET>`. The endpoint returns per-user success/failure results; it processes users sequentially.
+- Snapshot collection attempts are persisted in freshness metadata, including a cumulative failure count, last attempt time, and last error. A successful attempt clears the last error without clearing the cumulative failure count.
+- Stale cached profile data is never timestamped as a new snapshot after a failed Kaggle refresh; the failed attempt is recorded instead.
+- The scheduled endpoint does not itself create a scheduler. Configure one in the hosting platform to call it once per day.
+- Snapshot writes currently use the JSON repository. The host must provide durable shared filesystem storage for history to persist; ephemeral or multi-instance/serverless deployments need a database or shared persistent volume.
+- Current profile integration does not return registration date, follower count, rank, tier, or competition participation. These remain `null` in snapshots and are shown as unavailable.
+- Notebook and dataset snapshot counts reflect the normalized list response, which is currently limited to one page (up to 100 items). They are observed public-item counts, not guaranteed complete Kaggle totals.
+- Growth is reported only when snapshots span the requested interval and the metric is present in both endpoint snapshots. It is not backfilled from current totals.
+
+## Fair comparison
+
+`GET /api/kaggle/compare?a=<username>&b=<username>` returns topic overlap based on currently returned public activity metadata. It explicitly marks equal account-age windows unavailable until registration dates and complete historical contribution records are available. An empty public activity response is not treated as proof that an account does not exist. Topic similarity is not a measure of collaboration ability.
+
+The comparison and history views are available at `/compare` and `/history/<username>`. The history landing page is `/history`.

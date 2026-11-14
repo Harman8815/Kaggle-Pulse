@@ -19,7 +19,7 @@ Classifies each metric as `available`, `needs_collection`, or `blocked` per the 
 | Tier | blocked | profile endpoint not integrated | null |
 | Followers | blocked | profile endpoint not integrated | null |
 | Rank | blocked | profile endpoint not integrated | null |
-| Historical snapshots | needs_collection | collection started Stage 0 | daily, per user |
+| Historical snapshots | needs_collection | on-view collection and protected daily endpoint | one UTC-day snapshot per user; filesystem storage must be durable |
 | Freshness tracking | available | foundation layer | lastSuccessfulFetch, fetchFailures |
 
 ## What analytics can run now
@@ -27,11 +27,15 @@ Classifies each metric as `available`, `needs_collection`, or `blocked` per the 
 - Activity heatmap / monthly activity (Notebook + Dataset).
 - Type counts and contribution stats (Notebook/Dataset only).
 - Recent activity list.
+- Current-activity topic overlap in Fair Head-to-Head, based on currently returned public activity metadata only.
 
 ## What needs collection
 
-- Historical follower/rank/tier trends (snapshots just starting).
+- Historical growth over 7, 30, 90, or 365 days, only when snapshots span the requested interval and the metric is present in both snapshots.
+- Scheduled daily snapshots for profiles in `KAGGLE_TRACKED_USERS`, using an external scheduler to call the protected snapshot endpoint.
 
 ## What is blocked
 
 - Anything requiring models, competitions, discussions, profile tier/followers/rank, or registration date until the corresponding endpoints are integrated.
+- First 12/24/36-month Fair Head-to-Head metrics until registration dates and complete historical contribution records are available. Current latest-run/update timestamps do not prove creation dates.
+- Durable deployed history on ephemeral/serverless storage until the JSON repository is replaced with a durable database or shared volume.

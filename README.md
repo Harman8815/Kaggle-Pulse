@@ -52,11 +52,17 @@ KAGGLE_API_TOKEN=your_kaggle_api_token
 
 # Optional: Default username for home page (client-safe)
 NEXT_PUBLIC_USERNAME=your_kaggle_username
+
+# Optional: Protect the daily snapshot endpoint and configure tracked profiles
+# CRON_SECRET=use-a-long-random-secret
+# KAGGLE_TRACKED_USERS=username_one,username_two
 ```
 
 Get your API token from [Kaggle Account Settings](https://www.kaggle.com/settings/account) → "Create New Token".
 
 For Netlify, set `KAGGLE_API_TOKEN` and `NEXT_PUBLIC_USERNAME` in the site environment variables. Do not set `KAGGLE_USERNAME` to the same value as `NEXT_PUBLIC_USERNAME`: the username is public and embedding the same value under a secret variable name can trigger Netlify's secrets scan. `KAGGLE_KEY` is not used by this app. Keep `.env.local` out of Git; if an API token was ever committed, revoke it in Kaggle and create a new one.
+
+Profile history is recorded once per UTC day when a dashboard or history profile is opened. For scheduled collection, configure `CRON_SECRET` and `KAGGLE_TRACKED_USERS`, then schedule an authenticated `POST` to `/api/kaggle/snapshots` once daily. The JSON file store requires durable shared filesystem storage; ephemeral/serverless deployments must use a persistent volume or a database-backed repository for history to survive and remain consistent.
 
 ### Development
 
@@ -204,6 +210,8 @@ CMD ["npm", "start"]
 | `KAGGLE_USERNAME` | Yes | Server | Kaggle username for API auth |
 | `KAGGLE_API_TOKEN` | Yes | Server | Current API token from Kaggle |
 | `NEXT_PUBLIC_USERNAME` | No | Client | Default username for home page |
+| `CRON_SECRET` | No | Server | Bearer token protecting scheduled snapshot collection |
+| `KAGGLE_TRACKED_USERS` | No | Server | Comma-separated usernames collected by the daily snapshot endpoint |
 
 ## API Rate Limits
 
