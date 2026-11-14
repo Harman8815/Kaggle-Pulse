@@ -1,5 +1,5 @@
 import type {
-	DataAvailability,
+	DataAvailabilityReport,
 	DataFreshness,
 	FoundationResult,
 	KaggleActivityRecord,
@@ -85,7 +85,7 @@ export async function getUserFoundation(
 			competitions: [],
 		};
 		const freshness: DataFreshness = {
-			...cachedFreshness,
+			...(cachedFreshness ?? emptyFreshness(trimmed)),
 			lastAnalyticsCalculation: new Date().toISOString(),
 		};
 		const foundation = buildFoundation(
@@ -116,7 +116,7 @@ export async function getUserFoundation(
 	} catch (error) {
 		if (cachedProfile && cachedActivities.length > 0) {
 			const stale: DataFreshness = {
-				...cachedFreshness ?? emptyFreshness(trimmed),
+				...(cachedFreshness ?? emptyFreshness(trimmed)),
 				fetchFailures: (cachedFreshness?.fetchFailures ?? 0) + 1,
 				lastAnalyticsCalculation: new Date().toISOString(),
 			};
@@ -184,7 +184,7 @@ function buildFoundation(
 	metadata: KaggleMetadata,
 	freshness: DataFreshness
 ): KaggleUserFoundation {
-	const availability: DataAvailability = buildAvailabilityReport(
+	const availability: DataAvailabilityReport = buildAvailabilityReport(
 		freshness,
 		activities.length
 	);

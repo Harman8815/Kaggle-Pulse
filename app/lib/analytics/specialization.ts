@@ -8,7 +8,7 @@ import type {
   SpecializationLabel,
   SpecializationScore,
   TopicDomain,
-} from "./specialization.types.ts";
+} from "./specialization.types";
 import {
   TOPIC_DOMAIN_ORDER,
   TOPIC_LABELS,
@@ -22,7 +22,7 @@ import {
   SPECIALIZATION_EMERGING_MAX_ITEMS,
   SPECIALIZATION_MODEL_DOC,
   GLOBAL_MISSING_FIELDS,
-} from "./specialization.types.ts";
+} from "./specialization.types";
 
 function normalize(text: string): string {
   return text
@@ -257,3 +257,5 @@ export type {
   SpecializationScore,
   TopicDomain,
 } from "./specialization.types";
+
+export { TOPIC_LABELS };

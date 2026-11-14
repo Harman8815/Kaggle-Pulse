@@ -37,6 +37,12 @@ export interface TopicMatch {
   availability: TopicAvailability;
 }
 
+export interface ActivityTopicMatch {
+  activityId: string;
+  type: KaggleActivity["type"];
+  domains: Array<{ domain: TopicDomain; matchedKeywords: string[] }>;
+}
+
 export interface SpecializationScore {
   domain: TopicDomain;
   label: string;
@@ -192,10 +198,9 @@ export const TOPIC_TAXONOMY: Record<TopicDomain, TopicKeywordMap> = {
   },
 };
 
-export const TOPIC_KEYWORD_MAP: Record<TopicDomain, string[]> = {};
-for (const domain of TOPIC_DOMAIN_ORDER) {
-  TOPIC_KEYWORD_MAP[domain] = TOPIC_TAXONOMY[domain].keywords;
-}
+export const TOPIC_KEYWORD_MAP = Object.fromEntries(
+  TOPIC_DOMAIN_ORDER.map((domain) => [domain, TOPIC_TAXONOMY[domain].keywords]),
+) as Record<TopicDomain, string[]>;
 
 export const STOP_WORDS = new Set([
   "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "has", "he", "in", "is",

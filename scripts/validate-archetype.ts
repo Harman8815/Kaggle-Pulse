@@ -1,4 +1,4 @@
-import { buildContributionArchetype } from "../app/lib/analytics/archetype.ts";
+import { buildContributionArchetype } from "../app/lib/analytics/archetype";
 
 const deepEqual = (a: unknown, b: unknown): boolean => {
   if (a === b) return true;

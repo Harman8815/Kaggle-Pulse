@@ -1,4 +1,5 @@
-import { buildSpecializationFingerprint } from "../app/lib/analytics/specialization.ts";
+import { buildSpecializationFingerprint } from "../app/lib/analytics/specialization";
+import type { KaggleActivity } from "../app/utils/api";
 
 const deepEqual = (a: unknown, b: unknown): boolean => {
   if (a === b) return true;
@@ -10,14 +11,14 @@ const deepEqual = (a: unknown, b: unknown): boolean => {
 };
 
 const activity = (overrides: {
-  type: string;
+  type: KaggleActivity["type"];
   id: string;
   title: string;
   date?: string;
   url?: string;
   description?: string;
   language?: string;
-}) => ({
+}): KaggleActivity => ({
   type: overrides.type,
   id: overrides.id,
   title: overrides.title,

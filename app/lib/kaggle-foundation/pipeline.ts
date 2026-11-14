@@ -1,13 +1,14 @@
 import type {
 	ActivityType,
 	DataFreshness,
+	DataAvailabilityReport,
 	KaggleActivityRecord,
 	KaggleContributionStats,
 	KaggleMetadata,
-	KaggleRepository,
 	KaggleUserProfile,
 	RawKaggleResponse,
 } from "./schemas";
+import type { KaggleRepository } from "./repository";
 import { nowIso } from "./json-storage";
 
 const KAGGLE_API = "https://www.kaggle.com/api/v1";
@@ -21,7 +22,7 @@ export class KaggleApiError extends Error {
 	}
 }
 
-interface KaggleAuth {
+interface KaggleAuth extends Record<string, string> {
 	Authorization: string;
 	Accept: string;
 }
@@ -182,6 +183,9 @@ export function buildFreshness(
 		lastActivityUpdate: options.lastActivityUpdate,
 		lastAnalyticsCalculation: null,
 		fetchFailures: options.fetchFailures,
+		snapshotCollectionFailures: 0,
+		lastSnapshotAttempt: null,
+		lastSnapshotError: null,
 		incompleteDatasets: options.incompleteDatasets,
 		cacheExpiresAt: options.cacheExpiresAt,
 	};

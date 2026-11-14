@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { KaggleActivity } from "@/utils/api";
-import { getUserFoundation } from "@/app/lib/kaggle-foundation/foundation";
+import type { KaggleActivity } from "@/app/utils/api";
+import {
+	collectSnapshot,
+	getUserFoundation,
+} from "@/app/lib/kaggle-foundation/foundation";
 import { KaggleApiError } from "@/app/lib/kaggle-foundation/pipeline";
 
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -28,11 +31,11 @@ export async function GET(request: NextRequest) {
 				title: activity.title,
 				date: activity.date,
 				url: activity.url,
-				description: activity.description,
-				votes: activity.votes,
-				views: activity.views,
-				downloads: activity.downloads,
-				language: activity.language,
+				description: activity.description ?? undefined,
+				votes: activity.votes ?? undefined,
+				views: activity.views ?? undefined,
+				downloads: activity.downloads ?? undefined,
+				language: activity.language ?? undefined,
 				metadata: activity.metadata,
 			})
 		);
