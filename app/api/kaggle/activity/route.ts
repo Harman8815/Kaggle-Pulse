@@ -1,182 +1,106 @@
 import { NextRequest, NextResponse } from "next/server";
+import type { KaggleActivity } from "@/app/utils/api";
+import {
+	collectSnapshot,
+	getUserFoundation,
+} from "@/app/lib/kaggle-foundation/foundation";
+import { KaggleApiError } from "@/app/lib/kaggle-foundation/pipeline";
 
-const KAGGLE_API = "https://www.kaggle.com/api/v1";
-const KAGGLE_PAGE_SIZE = 100;
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-interface CacheEntry {
-  data: any;
-  timestamp: number;
-}
-
-const cache = new Map<string, CacheEntry>();
-
-class KaggleApiError extends Error {
-  constructor(readonly status: number) {
-    super(`Kaggle API returned ${status}`);
-    this.name = "KaggleApiError";
-  }
-}
-
-interface KaggleItem {
-  ref?: string;
-  title?: string;
-  description?: string;
-  lastRunTime?: string;
-  lastUpdated?: string;
-  totalVotes?: number;
-  totalViews?: number;
-  downloadCount?: number;
-  language?: string;
-  [key: string]: unknown;
-}
-
-function getCredentials() {
-  const token = process.env.KAGGLE_API_TOKEN;
-  const username = process.env.KAGGLE_USERNAME;
-
-  if (!token) {
-    throw new Error(
-      "KAGGLE_API_TOKEN is missing; set it to a current API token from your Kaggle account's API settings"
-    );
-  }
-
-  if (!username) {
-    throw new Error(
-      "KAGGLE_USERNAME is missing; set it to your Kaggle username"
-    );
-  }
-
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: "application/json",
-  };
-}
-
-async function fetchKaggle(endpoint: string, cacheKey: string) {
-  const now = Date.now();
-  const cached = cache.get(cacheKey);
-
-  if (cached && now - cached.timestamp < CACHE_TTL) {
-    return cached.data;
-  }
-
-  const response = await fetch(`${KAGGLE_API}/${endpoint}`, {
-    headers: getCredentials(),
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new KaggleApiError(response.status);
-  }
-
-  const data = await response.json();
-  cache.set(cacheKey, { data, timestamp: now });
-  return data;
-}
-
-function normalizeActivities(
-  items: KaggleItem[],
-  type: "Notebook" | "Dataset"
-) {
-  return items.map((item) => {
-    const ref = item.ref ?? "";
-
-    return {
-      id: `${type}-${ref}`,
-      type,
-      title: item.title ?? "Untitled",
-      date:
-        type === "Notebook"
-          ? item.lastRunTime ?? null
-          : item.lastUpdated ?? null,
-      url: ref
-        ? type === "Notebook"
-          ? `https://www.kaggle.com/code/${ref}`
-          : `https://www.kaggle.com/datasets/${ref}`
-        : "",
-      description: item.description ?? "",
-      votes: item.totalVotes ?? 0,
-      views: item.totalViews,
-      downloads: item.downloadCount,
-      language: item.language,
-      metadata: item,
-    };
-  });
-}
-
 export async function GET(request: NextRequest) {
-  const { searchParams } = request.nextUrl;
+	const { searchParams } = request.nextUrl;
 
-  try {
-    const username =
-      searchParams.get("username") || process.env.NEXT_PUBLIC_USERNAME;
+	try {
+		const username =
+			searchParams.get("username") || process.env.NEXT_PUBLIC_USERNAME;
 
-    if (!username?.trim()) {
-      return NextResponse.json(
-        { error: "Username is required" },
-        { status: 400 }
-      );
-    }
+		if (!username?.trim()) {
+			return NextResponse.json(
+				{ error: "Username is required" },
+				{ status: 400 }
+			);
+		}
 
-    const cacheKey = `kaggle-${username}`;
+		const { foundation, fromCache } = await getUserFoundation(username.trim());
+		let snapshotCollection: { status: "saved" | "failed"; message?: string };
+		try {
+			await collectSnapshot(username.trim(), foundation);
+			snapshotCollection = { status: "saved" };
+		} catch (error) {
+			const message =
+				error instanceof Error ? error.message : "Snapshot collection failed";
+			console.error(`Kaggle snapshot collection failed for ${username.trim()}:`, error);
+			snapshotCollection = { status: "failed", message };
+		}
 
-    const [notebooks, datasets] = await Promise.all([
-      fetchKaggle(
-        `kernels/list?user=${encodeURIComponent(username)}&pageSize=${KAGGLE_PAGE_SIZE}`,
-        `${cacheKey}-notebooks`
-      ),
-      fetchKaggle(
-        `datasets/list?user=${encodeURIComponent(username)}&pageSize=${KAGGLE_PAGE_SIZE}`,
-        `${cacheKey}-datasets`
-      ),
-    ]);
+		const activities: KaggleActivity[] = foundation.activities.map(
+			(activity) => ({
+				id: activity.id,
+				type: activity.type,
+				title: activity.title,
+				date: activity.date,
+				url: activity.url,
+				description: activity.description ?? undefined,
+				votes: activity.votes ?? undefined,
+				views: activity.views ?? undefined,
+				downloads: activity.downloads ?? undefined,
+				language: activity.language ?? undefined,
+				metadata: activity.metadata,
+			})
+		);
 
-    const activities = [
-      ...normalizeActivities(notebooks, "Notebook"),
-      ...normalizeActivities(datasets, "Dataset"),
-    ];
+		const stats = {
+			total: foundation.stats.total,
+			notebooks: foundation.stats.notebooks,
+			datasets: foundation.stats.datasets,
+			models: foundation.stats.models,
+			competitions: foundation.stats.competitions,
+			discussions: foundation.stats.discussions,
+		};
 
-    const stats = {
-      total: activities.length,
-      notebooks: activities.filter((a) => a.type === "Notebook").length,
-      datasets: activities.filter((a) => a.type === "Dataset").length,
-      models: 0,
-      competitions: 0,
-      discussions: 0,
-    };
+		return NextResponse.json(
+			{
+				username: foundation.username,
+				profileUrl: foundation.profile.profileUrl,
+				activities,
+				stats,
+				cached: fromCache,
+				snapshotCollection,
+				freshness: {
+					lastSuccessfulFetch: foundation.freshness.lastSuccessfulFetch,
+					lastActivityUpdate: foundation.freshness.lastActivityUpdate,
+					cacheExpiresAt: foundation.freshness.cacheExpiresAt,
+					fetchFailures: foundation.freshness.fetchFailures,
+					incompleteDatasets: foundation.freshness.incompleteDatasets,
+				},
+			},
+			{
+				headers: {
+					"Cache-Control": `public, s-maxage=${CACHE_TTL / 1000}, stale-while-revalidate=600`,
+				},
+			}
+		);
+	} catch (error) {
+		console.error("Kaggle API error:", error);
 
-    return NextResponse.json({
-      username,
-      profileUrl: `https://www.kaggle.com/${username}`,
-      activities,
-      stats,
-      cached: false,
-    }, {
-      headers: {
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
-      },
-    });
-  } catch (error) {
-    console.error("Kaggle API error:", error);
+		if (error instanceof KaggleApiError && error.status === 401) {
+			return NextResponse.json(
+				{
+					error:
+						"Kaggle rejected the configured credentials. Set KAGGLE_API_TOKEN to a current API token from your Kaggle account's API settings, then restart the server.",
+				},
+				{ status: 502 }
+			);
+		}
 
-    if (error instanceof KaggleApiError && error.status === 401) {
-      return NextResponse.json(
-        {
-          error:
-            "Kaggle rejected the configured credentials. Set KAGGLE_API_TOKEN to a current API token from your Kaggle account's API settings, then restart the server.",
-        },
-        { status: 502 }
-      );
-    }
-
-    return NextResponse.json(
-      {
-        error: error instanceof Error
-          ? error.message
-          : "Failed to fetch Kaggle data",
-      },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(
+			{
+				error: error instanceof Error
+					? error.message
+					: "Failed to fetch Kaggle data",
+			},
+			{ status: 500 }
+		);
+	}
 }
