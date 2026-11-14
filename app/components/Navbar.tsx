@@ -10,6 +10,7 @@ export const Navbar = () => (
             <div className="topbar-links">
                 <Link href="/compare">Compare</Link>
                 <Link href="/history">History</Link>
+                <Link href="/cohorts">Cohorts</Link>
             </div>
             <span className="topbar-caption">CREATOR DASHBOARD</span>
         </div>

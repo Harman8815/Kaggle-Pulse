@@ -2776,6 +2776,200 @@ html[data-theme="dark"] .specialization-baseline {
   margin-bottom: 16px;
 }
 
+.cohort-panel {
+  margin-bottom: 16px;
+}
+
+.cohort-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.cohort-form label {
+  display: grid;
+  gap: 7px;
+  color: #53645b;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.cohort-form select {
+  cursor: pointer;
+}
+
+.cohort-form .search-btn {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 16px;
+  background: #16835d;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.cohort-form .search-btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.cohort-heading {
+  align-items: center;
+}
+
+.cohort-status {
+  flex: 0 0 auto;
+  border-radius: 99px;
+  padding: 5px 9px;
+  background: #fff4e5;
+  color: #8a5a00;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.cohort-status-ready {
+  background: #e8f5ef;
+  color: #1f6b4c;
+}
+
+.cohort-percentile {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.cohort-percentile strong {
+  color: #16835d;
+  font-size: 38px;
+  letter-spacing: -0.05em;
+}
+
+.cohort-percentile span,
+.cohort-panel > p {
+  color: #75827b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.cohort-distribution {
+  margin: 0 2px 22px;
+}
+
+.cohort-distribution-track {
+  position: relative;
+  height: 12px;
+  border-radius: 99px;
+  background: #edf1ef;
+}
+
+.cohort-range {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  min-width: 4px;
+  border-radius: inherit;
+  background: #8dd5b3;
+}
+
+.cohort-user-marker {
+  position: absolute;
+  top: -5px;
+  width: 3px;
+  height: 22px;
+  border-radius: 3px;
+  background: #176f50;
+  transform: translateX(-50%);
+}
+
+.cohort-distribution-labels,
+.cohort-quantiles {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  color: #929e97;
+  font-size: 10px;
+}
+
+.cohort-quantiles {
+  margin-top: 16px;
+}
+
+.cohort-quantiles span {
+  display: grid;
+  gap: 4px;
+}
+
+.cohort-quantiles strong {
+  color: #53645b;
+  font-size: 10px;
+}
+
+.cohort-unavailable {
+  border: 1px solid #f0dfc2;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fffbf5;
+  color: #765a2c;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.cohort-coverage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  border-top: 1px solid #edf1ef;
+  padding-top: 14px;
+  color: #929e97;
+  font-size: 10px;
+}
+
+.cohort-coverage strong {
+  color: #53645b;
+}
+
+.cohort-method-title {
+  margin: 0;
+  color: #26352d;
+  font-size: 14px;
+}
+
+html[data-theme="dark"] .cohort-form label,
+html[data-theme="dark"] .cohort-quantiles strong,
+html[data-theme="dark"] .cohort-coverage strong,
+html[data-theme="dark"] .cohort-method-title {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .cohort-percentile span,
+html[data-theme="dark"] .cohort-panel > p,
+html[data-theme="dark"] .cohort-coverage,
+html[data-theme="dark"] .cohort-quantiles {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .cohort-distribution-track {
+  background: #2a362f;
+}
+
+html[data-theme="dark"] .cohort-unavailable {
+  border-color: #56462c;
+  background: #282319;
+  color: #d9c49c;
+}
+
+@media (max-width: 760px) {
+  .cohort-form {
+    grid-template-columns: 1fr;
+  }
+}
+
 .comparison-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr)) auto;

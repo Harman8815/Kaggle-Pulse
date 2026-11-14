@@ -14,6 +14,7 @@ export interface KaggleRepository {
 	): Promise<RawKaggleResponse[]>;
 	saveUserProfile(profile: KaggleUserProfile): Promise<void>;
 	getUserProfile(username: string): Promise<KaggleUserProfile | null>;
+	getUserProfiles(): Promise<KaggleUserProfile[]>;
 	saveActivities(
 		username: string,
 		activities: KaggleActivityRecord[]

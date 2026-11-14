@@ -179,3 +179,39 @@ export interface HistoryGrowth {
 	from: string | null;
 	to: string | null;
 }
+
+export type CohortMetric = "notebooks" | "datasets";
+
+export interface CohortRecord {
+	username: string;
+	notebookCount: number | null;
+	datasetCount: number | null;
+	snapshotAt: string;
+}
+
+export interface CohortDistribution {
+	sampleSize: number;
+	mean: number;
+	median: number;
+	min: number;
+	max: number;
+	percentiles: Record<"10" | "25" | "50" | "75" | "90", number>;
+}
+
+export interface CohortAnalysis {
+	username: string;
+	metric: CohortMetric;
+	cohort: "tracked-users";
+	supported: boolean;
+	reason: string | null;
+	userValue: number | null;
+	userPercentile: number | null;
+	minimumSampleSize: number;
+	distribution: CohortDistribution | null;
+	sampleUpdatedAt: string | null;
+	coverage: {
+		trackedProfiles: number;
+		profilesWithSnapshot: number;
+		recordsWithMetric: number;
+	};
+}

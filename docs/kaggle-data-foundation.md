@@ -76,3 +76,13 @@ Repository interface `KaggleRepository` with methods for raw responses, profiles
 `GET /api/kaggle/compare?a=<username>&b=<username>` returns topic overlap based on currently returned public activity metadata. It explicitly marks equal account-age windows unavailable until registration dates and complete historical contribution records are available. An empty public activity response is not treated as proof that an account does not exist. Topic similarity is not a measure of collaboration ability.
 
 The comparison and history views are available at `/compare` and `/history/<username>`. The history landing page is `/history`.
+
+## Cohort percentiles
+
+`GET /api/kaggle/cohorts?username=<username>&metric=notebooks|datasets` computes mean, median, range, interpolated percentiles, and the selected user's empirical percentile rank from the latest available daily snapshot for configured `KAGGLE_TRACKED_USERS`.
+
+- At least 30 profiles with a non-null metric are required before a percentile is displayed.
+- The result is explicitly a percentile within the configured tracked sample; its coverage is not representative of the Kaggle population unless independently established.
+- Current list endpoints return at most 100 records per contribution type. Notebook/dataset counts are therefore observed listing counts, not guaranteed complete totals.
+- Registration year, account age, tier, specialization, activity consistency, and competition cohorts are unavailable and are not inferred.
+- The comparison page is `/cohorts`. Until the minimum sample exists, it explains the sample shortfall rather than presenting a synthetic distribution.

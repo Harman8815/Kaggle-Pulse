@@ -60,3 +60,4 @@ Both stored as ISO UTC strings. Downstream heatmap/monthly builders depend on `d
 - Followers, rank, tier, registration date, and competition count remain `null` because the configured endpoints do not provide them.
 - Historical growth is reported only when genuine snapshots span the requested interval; existing Kaggle totals are not used to reconstruct earlier values.
 - Fair account-age windows remain unavailable until registration dates and complete historical contribution records can be verified.
+- Cohort percentiles can only describe the configured tracked sample once at least 30 profiles have valid daily metric snapshots; the sample is not assumed to represent all Kaggle users.

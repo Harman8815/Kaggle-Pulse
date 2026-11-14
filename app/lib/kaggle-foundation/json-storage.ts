@@ -89,6 +89,10 @@ export class JsonKaggleRepository implements KaggleRepository {
 		return items.find((p) => p.username === username) ?? null;
 	}
 
+	async getUserProfiles(): Promise<KaggleUserProfile[]> {
+		return readJsonFile<KaggleUserProfile[]>(FILES.profiles, []);
+	}
+
 	async saveActivities(
 		username: string,
 		activities: KaggleActivityRecord[]
