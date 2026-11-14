@@ -1,6 +1,7 @@
 import type {
 	DataFreshness,
 	ActivityObservation,
+	NetworkRelationship,
 	KaggleActivityRecord,
 	KaggleUserProfile,
 	RawKaggleResponse,
@@ -18,6 +19,10 @@ export interface KaggleRepository {
 	getUserProfiles(): Promise<KaggleUserProfile[]>;
 	saveActivityObservations(observations: ActivityObservation[]): Promise<void>;
 	getActivityObservations(usernames: string[]): Promise<ActivityObservation[]>;
+	saveNetworkRelationships(
+		relationships: NetworkRelationship[]
+	): Promise<void>;
+	getAllNetworkRelationships(): Promise<NetworkRelationship[]>;
 	saveActivities(
 		username: string,
 		activities: KaggleActivityRecord[]

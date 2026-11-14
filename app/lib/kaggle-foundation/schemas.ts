@@ -252,3 +252,28 @@ export interface TopicPulseAnalysis {
 	monthlyFirstObservations: Array<{ month: string; count: number }>;
 	domains: TopicPulseDomain[];
 }
+
+export type NetworkRelationshipType =
+	| "verified_teammate"
+	| "shared_competition"
+	| "public_interaction";
+
+export interface NetworkRelationship {
+	id: string;
+	usernameA: string;
+	usernameB: string;
+	type: NetworkRelationshipType;
+	observedAt: string;
+	sourceUrl: string;
+	sourceLabel: string;
+}
+
+export interface CollaborationNetwork {
+	username: string;
+	relationships: NetworkRelationship[];
+	directConnections: number;
+	secondDegreeConnections: number;
+	verifiedTeammates: number;
+	sharedCompetitionParticipants: number;
+	publicInteractionPartners: number;
+}

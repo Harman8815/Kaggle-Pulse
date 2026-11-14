@@ -12,6 +12,7 @@ export const Navbar = () => (
                 <Link href="/history">History</Link>
                 <Link href="/cohorts">Cohorts</Link>
                 <Link href="/pulse">Pulse</Link>
+                <Link href="/network">Network</Link>
             </div>
             <span className="topbar-caption">CREATOR DASHBOARD</span>
         </div>

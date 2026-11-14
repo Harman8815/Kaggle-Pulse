@@ -96,3 +96,11 @@ The comparison and history views are available at `/compare` and `/history/<user
 - Direction comparisons require 30 configured/observed profiles, at least 180 days of observations, and at least five classified unique items for the topic in each 90-day comparison window.
 - Supported direction describes first-observed catalog volume in the configured sample only. It is not a Kaggle-wide publication trend, user adoption date, or early-adopter classification.
 - Observation records are retained for 730 days; a durable shared store is required for continuity across deployments.
+
+## Collaboration Network
+
+- `POST /api/kaggle/network` accepts 1–1,000 curated relationship records and requires `Authorization: Bearer <CRON_SECRET>`.
+- Each record needs two distinct usernames, a relationship type (`verified_teammate`, `shared_competition`, or `public_interaction`), an observation timestamp, a Kaggle HTTPS source URL, and a source label. Records are deduplicated by normalized participants, type, timestamp, and source URL.
+- `GET /api/kaggle/network?username=<username>` returns the user's direct source-documented records, unique direct/second-degree counts, and relationship-type counts. The `/network` and `/network/<username>` views show the source and type for each edge.
+- The connected Kaggle endpoints do not provide these relationships. Curated records are not independently verified by the app; the UI preserves that caveat. Shared competition participation is never treated as proof of teammates or collaboration.
+- The network remains empty until relationship evidence is curated. No nodes or edges are inferred from public profile activity.

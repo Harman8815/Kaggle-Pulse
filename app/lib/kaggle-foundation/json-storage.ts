@@ -3,6 +3,7 @@ import path from "path";
 import type {
 	DataFreshness,
 	ActivityObservation,
+	NetworkRelationship,
 	KaggleActivityRecord,
 	KaggleUserProfile,
 	RawKaggleResponse,
@@ -19,6 +20,7 @@ const FILES = {
 	snapshots: "snapshots.json",
 	freshness: "freshness.json",
 	observations: "activity-observations.json",
+	relationships: "network-relationships.json",
 } as const;
 
 async function ensureDir(): Promise<void> {
@@ -123,6 +125,29 @@ export class JsonKaggleRepository implements KaggleRepository {
 		);
 		return observations.filter((observation) =>
 			included.has(observation.username.toLowerCase())
+		);
+	}
+
+	async saveNetworkRelationships(
+		relationships: NetworkRelationship[]
+	): Promise<void> {
+		const existing = await readJsonFile<NetworkRelationship[]>(
+			FILES.relationships,
+			[]
+		);
+		const byId = new Map(
+			existing.map((relationship) => [relationship.id, relationship])
+		);
+		for (const relationship of relationships) {
+			byId.set(relationship.id, relationship);
+		}
+		await writeJsonFile(FILES.relationships, [...byId.values()]);
+	}
+
+	async getAllNetworkRelationships(): Promise<NetworkRelationship[]> {
+		return readJsonFile<NetworkRelationship[]>(
+			FILES.relationships,
+			[]
 		);
 	}
 
