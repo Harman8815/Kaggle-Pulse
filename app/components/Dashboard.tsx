@@ -14,7 +14,9 @@ import { RecentActivityPanel } from "./dashboard/RecentActivityPanel";
 import { DashboardAttribution } from "./dashboard/DashboardAttribution";
 import { buildBehavioralSummary, type AnalyticsWindow } from "../lib/analytics/consistency";
 import { buildContributionArchetype } from "../lib/analytics/archetype";
+import { buildSpecializationFingerprint } from "../lib/analytics/specialization";
 import { ArchetypePanel } from "./dashboard/archetype/ArchetypePanel";
+import { SpecializationPanel } from "./dashboard/specialization/SpecializationPanel";
 import { BehavioralSummaryPanel } from "./dashboard/consistency/BehavioralSummaryPanel";
 import { ConsistencyPanel } from "./dashboard/consistency/ConsistencyPanel";
 import { BurstinessPanel } from "./dashboard/consistency/BurstinessPanel";
@@ -35,6 +37,7 @@ export const Dashboard = ({ username }: DashboardProps) => {
     const [analyticsWindow, setAnalyticsWindow] = useState<AnalyticsWindow>("all");
     const [habitsOpen, setHabitsOpen] = useState(true);
     const [archetypeOpen, setArchetypeOpen] = useState(true);
+    const [specializationOpen, setSpecializationOpen] = useState(true);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -85,6 +88,10 @@ export const Dashboard = ({ username }: DashboardProps) => {
     const archetype = useMemo(
         () => buildContributionArchetype({ stats: userData?.stats, activities }),
         [userData, activities],
+    );
+    const specialization = useMemo(
+        () => buildSpecializationFingerprint({ activities }),
+        [activities],
     );
     const latestActivity = sortedActivities[0];
     const profileUrl = userData?.profileUrl ?? `https://www.kaggle.com/${userData?.username}`;
@@ -184,6 +191,24 @@ export const Dashboard = ({ username }: DashboardProps) => {
                         </button>
                     </div>
                     {archetypeOpen && <ArchetypePanel result={archetype} />}
+                </section>
+
+                <section className="panel rhythm-section specialization-section">
+                    <div className="panel-heading rhythm-section-heading">
+                        <div>
+                            <h2>Specialization fingerprint</h2>
+                            <p>Topic intelligence derived from notebook, dataset and competition metadata.</p>
+                        </div>
+                        <button
+                            type="button"
+                            className="rhythm-collapse-btn"
+                            aria-expanded={specializationOpen}
+                            onClick={() => setSpecializationOpen((v) => !v)}
+                        >
+                            {specializationOpen ? "Collapse" : "Expand"}
+                        </button>
+                    </div>
+                    {specializationOpen && <SpecializationPanel result={specialization} />}
                 </section>
 
                 <VisualizationGrid monthlyActivity={monthlyActivity} typeCounts={typeCounts} />

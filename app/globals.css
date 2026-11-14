@@ -2400,3 +2400,348 @@ html[data-theme="dark"] .archetype-coverage-missing {
 html[data-theme="dark"] .archetype-baseline {
   color: #87958c;
 }
+
+/* Stage 3: Specialization Fingerprint */
+.specialization-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.specialization-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.specialization-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.specialization-name {
+  color: #26352d;
+  font-size: 17px;
+  font-weight: 680;
+  letter-spacing: -0.015em;
+}
+
+.specialization-primary {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.specialization-primary-label {
+  color: #929e97;
+  font-size: 12px;
+}
+
+.specialization-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.specialization-secondary-label {
+  color: #929e97;
+  font-size: 12px;
+}
+
+.specialization-secondary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #e8f0ff;
+  color: #3557a6;
+}
+
+.specialization-note {
+  margin: 0;
+  font-size: 13px;
+  color: #929e97;
+}
+
+.specialization-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.specialization-distribution-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.specialization-distribution-domain {
+  flex: 0 0 auto;
+  color: #6f7d75;
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.specialization-distribution-track {
+  flex: 1;
+  min-width: 0;
+  height: 8px;
+  background: #edf1ef;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.specialization-distribution-bar {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #4eb889;
+  transition: width 200ms ease;
+}
+
+.specialization-distribution-value {
+  flex: 0 0 auto;
+  color: #46564d;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: right;
+  min-width: 56px;
+}
+
+.specialization-distribution-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #7d8b83;
+}
+
+.specialization-distribution-note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #5f6b66;
+}
+
+.specialization-top-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.specialization-top-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  color: #5f6b66;
+}
+
+.specialization-top-rank {
+  flex: 0 0 auto;
+  color: #46564d;
+  font-weight: 700;
+  font-size: 13px;
+  min-width: 20px;
+}
+
+.specialization-top-domain {
+  flex: 1;
+  min-width: 0;
+  color: #26352d;
+  font-weight: 600;
+}
+
+.specialization-top-value {
+  flex: 0 0 auto;
+  color: #46564d;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+  min-width: 150px;
+}
+
+.specialization-explanations {
+  display: grid;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.specialization-explanation-item {
+  font-size: 13px;
+  color: #5f6b66;
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.specialization-explanation-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4eb889;
+}
+
+.specialization-coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.specialization-coverage-heading {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #26352d;
+}
+
+.specialization-coverage-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #5f6b66;
+}
+
+.specialization-coverage-domain {
+  flex: 0 0 auto;
+  color: #46564d;
+  font-weight: 600;
+}
+
+.specialization-availability-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.specialization-availability-badge.availability-available {
+  background: #e8f5ef;
+  color: #1f6b4c;
+}
+
+.specialization-availability-badge.availability-blocked {
+  background: #f1f3f2;
+  color: #4a5550;
+}
+
+.specialization-availability-badge.availability-needs_collection {
+  background: #fff4e5;
+  color: #8a5a00;
+}
+
+.specialization-coverage-count {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: #9aa59f;
+}
+
+.specialization-coverage-note {
+  margin: 0;
+  font-size: 13px;
+  color: #929e97;
+}
+
+.specialization-baseline {
+  margin: 0;
+  padding-top: 6px;
+  font-size: 12px;
+  color: #929e97;
+}
+
+.specialization-baseline strong {
+  color: #46564d;
+}
+
+html[data-theme="dark"] .specialization-name {
+  color: #dce7df;
+}
+
+html[data-theme="dark"] .specialization-primary-label,
+html[data-theme="dark"] .specialization-note,
+html[data-theme="dark"] .specialization-distribution-note,
+html[data-theme="dark"] .specialization-coverage-note {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .specialization-secondary-label {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .specialization-distribution-domain {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .specialization-distribution-value {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .specialization-distribution-track {
+  background: #2a362f;
+}
+
+html[data-theme="dark"] .specialization-distribution-bar {
+  background: #5bc798;
+}
+
+html[data-theme="dark"] .specialization-distribution-axis {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .specialization-top-item {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .specialization-top-domain {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .specialization-top-value {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .specialization-explanation-item {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .specialization-explanation-item::before {
+  background: #5bc798;
+}
+
+html[data-theme="dark"] .specialization-coverage-item {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .specialization-coverage-domain {
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .specialization-coverage-count {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .specialization-baseline {
+  color: #87958c;
+}
