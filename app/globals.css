@@ -781,6 +781,21 @@ body {
 }
 
 @media (max-width: 520px) {
+  .brand {
+    flex-shrink: 0;
+  }
+
+  .topbar-links {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .topbar-links::-webkit-scrollbar {
+    display: none;
+  }
+
   .topbar-inner {
     width: calc(100% - 28px);
   }
@@ -2786,6 +2801,226 @@ html[data-theme="dark"] .specialization-baseline {
 
 .network-panel {
   margin-bottom: 16px;
+}
+
+.atlas-panel {
+  margin-bottom: 16px;
+}
+
+.atlas-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.atlas-stat {
+  min-width: 0;
+  min-height: 116px;
+}
+
+.atlas-stat > strong {
+  overflow-wrap: anywhere;
+  font-size: clamp(18px, 2.5vw, 27px);
+}
+
+.atlas-heading {
+  align-items: flex-start;
+}
+
+.atlas-status {
+  flex: 0 0 auto;
+  border-radius: 99px;
+  padding: 5px 9px;
+  background: #fff4e5;
+  color: #8a5a00;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.atlas-status-ready {
+  background: #e8f5ef;
+  color: #1f6b4c;
+}
+
+.atlas-method,
+.atlas-caveat,
+.atlas-unavailable {
+  color: #75827b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.atlas-map-wrap {
+  overflow: auto;
+  border: 1px solid #e8eeea;
+  border-radius: 10px;
+  background:
+    linear-gradient(#edf1ef 1px, transparent 1px),
+    linear-gradient(90deg, #edf1ef 1px, transparent 1px),
+    #fbfcfb;
+  background-size: 10% 10%;
+}
+
+.atlas-map {
+  display: block;
+  width: 100%;
+  min-width: 460px;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.atlas-point {
+  cursor: pointer;
+  stroke: #fff;
+  stroke-width: 0.3px;
+  transition: r 120ms ease, opacity 120ms ease;
+}
+
+.atlas-point:hover {
+  r: 2.2;
+  stroke: #25372d;
+  stroke-width: 0.6px;
+}
+
+.atlas-selected circle {
+  fill: none;
+  stroke: #18251e;
+  stroke-width: 0.8px;
+}
+
+.atlas-selected text {
+  fill: #26352d;
+  font-size: 2.4px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.atlas-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 14px;
+}
+
+.atlas-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #75827b;
+  font-size: 10px;
+}
+
+.atlas-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.atlas-legend .atlas-legend-selected {
+  border: 2px solid #26352d;
+  background: transparent;
+}
+
+.atlas-neighbors {
+  display: grid;
+}
+
+.atlas-neighbor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid #edf1ef;
+  padding: 11px 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.atlas-neighbor:hover .atlas-neighbor-name strong {
+  color: #16835d;
+}
+
+.atlas-neighbor-rank {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 8px;
+  background: #f0f3f1;
+  color: #75827b;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.atlas-neighbor-name {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+
+.atlas-neighbor-name strong {
+  overflow: hidden;
+  color: #26352d;
+  font-size: 12px;
+  text-overflow: ellipsis;
+}
+
+.atlas-neighbor-name small {
+  color: #929e97;
+  font-size: 10px;
+}
+
+.atlas-neighbor-score {
+  color: #16835d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+html[data-theme="dark"] .atlas-map-wrap {
+  border-color: #2a362f;
+  background:
+    linear-gradient(#2a362f 1px, transparent 1px),
+    linear-gradient(90deg, #2a362f 1px, transparent 1px),
+    #1b2620;
+}
+
+html[data-theme="dark"] .atlas-method,
+html[data-theme="dark"] .atlas-caveat,
+html[data-theme="dark"] .atlas-unavailable,
+html[data-theme="dark"] .atlas-legend span,
+html[data-theme="dark"] .atlas-neighbor-name small {
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .atlas-selected text,
+html[data-theme="dark"] .atlas-neighbor-name strong {
+  fill: #dce7df;
+  color: #c2cec6;
+}
+
+html[data-theme="dark"] .atlas-selected circle {
+  stroke: #dce7df;
+}
+
+html[data-theme="dark"] .atlas-point {
+  stroke: #1b2620;
+}
+
+html[data-theme="dark"] .atlas-neighbor {
+  border-color: #2a362f;
+}
+
+html[data-theme="dark"] .atlas-neighbor-rank {
+  background: #2a362f;
+  color: #aab8af;
+}
+
+@media (max-width: 760px) {
+  .atlas-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .network-caveat,

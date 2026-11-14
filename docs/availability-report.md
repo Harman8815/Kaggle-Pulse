@@ -31,6 +31,7 @@ Classifies each metric as `available`, `needs_collection`, or `blocked` per the 
 - Notebook/dataset percentiles within a configured tracked-profile sample when at least 30 usable snapshots exist. These are sample-relative, not Kaggle-wide percentiles.
 - First-observed notebook/dataset topic catalog counts for configured profiles; these measure collection visibility, not Kaggle publication trends.
 - Source-documented relationship graphs only after authenticated curated records are ingested.
+- A reproducible 2D PCA and nearest-neighbor view for configured tracked profiles when at least five classifiable profiles provide two-dimensional specialization variance.
 
 ## What needs collection
 
@@ -47,3 +48,4 @@ Classifies each metric as `available`, `needs_collection`, or `blocked` per the 
 - Registration-year, tier, specialization, or account-age cohorts until Kaggle provides those fields and the tracked population has sufficient coverage.
 - Historical topic publication trends and personal adoption timing because publication timestamps and full historical catalog metadata are unavailable.
 - Automatic collaboration-network collection and any network conclusions until verified team membership or public interaction sources are integrated. Shared competition participation is stored as a separate relationship type and never implies teamwork.
+- Kaggle-wide user mapping, cohort labels, and historical trajectories until a representative community dataset and timestamped specialization history are collected.

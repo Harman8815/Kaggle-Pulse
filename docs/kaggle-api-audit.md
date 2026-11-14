@@ -63,3 +63,4 @@ Both stored as ISO UTC strings. Downstream heatmap/monthly builders depend on `d
 - Cohort percentiles can only describe the configured tracked sample once at least 30 profiles have valid daily metric snapshots; the sample is not assumed to represent all Kaggle users.
 - Topic observations capture the time this app first saw a returned item, not the item's publication date. Trend direction is therefore limited to first-observed catalog growth in the configured sample.
 - The connected endpoints do not expose verified teammate, competition participation, or forum-interaction relationships. Network edges require authenticated, source-documented curated ingestion and are not independently verified by the application.
+- Kaggle Atlas projects only configured tracked profiles with stored classifiable activity. Registration cohort, archetype, verified collaboration, and historical specialization trajectories are not available from the current collection.

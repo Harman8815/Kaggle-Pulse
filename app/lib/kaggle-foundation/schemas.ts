@@ -277,3 +277,34 @@ export interface CollaborationNetwork {
 	sharedCompetitionParticipants: number;
 	publicInteractionPartners: number;
 }
+
+export interface AtlasPoint {
+	username: string;
+	x: number;
+	y: number;
+	specialization: string | null;
+	selected: boolean;
+}
+
+export interface AtlasNeighbor {
+	username: string;
+	similarity: number;
+	specialization: string | null;
+}
+
+export interface KaggleAtlasResult {
+	username: string;
+	supported: boolean;
+	reason: string;
+	algorithm: string;
+	featureVersion: string;
+	sampleSize: number;
+	latestSourceAt: string | null;
+	mapPoints: AtlasPoint[];
+	selectedPoint: AtlasPoint | null;
+	nearestNeighbors: AtlasNeighbor[];
+	coverage: {
+		trackedProfiles: number;
+		profilesWithClassifiableActivity: number;
+	};
+}

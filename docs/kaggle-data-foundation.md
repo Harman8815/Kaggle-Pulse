@@ -104,3 +104,15 @@ The comparison and history views are available at `/compare` and `/history/<user
 - `GET /api/kaggle/network?username=<username>` returns the user's direct source-documented records, unique direct/second-degree counts, and relationship-type counts. The `/network` and `/network/<username>` views show the source and type for each edge.
 - The connected Kaggle endpoints do not provide these relationships. Curated records are not independently verified by the app; the UI preserves that caveat. Shared competition participation is never treated as proof of teammates or collaboration.
 - The network remains empty until relationship evidence is curated. No nodes or edges are inferred from public profile activity.
+
+## Kaggle Atlas
+
+`GET /api/kaggle/atlas?username=<username>` builds a 2D map from configured tracked profiles with stored public activities and projects the selected user's current specialization vector into the same sample basis.
+
+- Feature vectors use the normalized specialization-domain shares (`specialization-share-v1`), which limits raw account volume from dominating similarity.
+- Coordinates use PCA with deterministic power iteration over username-sorted inputs. PCA is a baseline projection, not evidence that visual distance proves user expertise or social affinity.
+- At least five profiles with classifiable activity and measurable variance in two dimensions are required. The selected user must have current classifiable activity for a point and nearest neighbors.
+- Nearest neighbors use cosine similarity of the same normalized vectors. The map is limited to the configured tracked sample, not the Kaggle population.
+- The projection is recomputed from the current tracked sample; its coordinate frame can change when that sample changes. Selected-user placement uses the same fitted basis (out-of-sample linear projection), not a separately fitted map.
+- The `/atlas` and `/atlas/<username>` views show the collection scope, algorithm/feature version, sample size, source freshness, specialization colors, and nearest neighbors. Missing coverage returns an unavailable state rather than invented positions.
+- Cohorts, archetypes, verified relationships, and historical specialization trajectories are not included until their source data exists.
