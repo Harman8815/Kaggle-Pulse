@@ -215,3 +215,40 @@ export interface CohortAnalysis {
 		recordsWithMetric: number;
 	};
 }
+
+export interface ActivityObservation {
+	id: string;
+	username: string;
+	activityId: string;
+	type: ActivityType;
+	title: string;
+	description: string | null;
+	language: string | null;
+	activityDate: string | null;
+	observedAt: string;
+}
+
+export type TopicTrendDirection = "growing" | "declining" | "established";
+
+export interface TopicPulseDomain {
+	domain: string;
+	earlyObservations: number;
+	recentObservations: number;
+	direction: TopicTrendDirection | null;
+	changePercent: number | null;
+	supported: boolean;
+	reason: string | null;
+}
+
+export interface TopicPulseAnalysis {
+	supported: boolean;
+	reason: string;
+	collectionStartedAt: string | null;
+	lastCollectedAt: string | null;
+	collectionDays: number;
+	trackedProfiles: number;
+	profilesObserved: number;
+	uniqueActivities: number;
+	monthlyFirstObservations: Array<{ month: string; count: number }>;
+	domains: TopicPulseDomain[];
+}

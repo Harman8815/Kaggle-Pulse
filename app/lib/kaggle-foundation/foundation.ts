@@ -2,6 +2,7 @@ import type {
 	DataAvailabilityReport,
 	DataFreshness,
 	FoundationResult,
+	ActivityObservation,
 	KaggleActivityRecord,
 	KaggleUserFoundation,
 	Snapshot,
@@ -211,6 +212,9 @@ export async function collectSnapshot(
 		const day = new Date().toISOString().slice(0, 10);
 		const existing = await repository.getSnapshotForDay(trimmed, day);
 		if (existing) {
+			if (foundation && foundation.freshness.fetchFailures === 0) {
+				await saveActivityObservations(trimmed, foundation.activities);
+			}
 			await recordSnapshotAttempt(trimmed);
 			return existing;
 		}
@@ -222,6 +226,7 @@ export async function collectSnapshot(
 				"Snapshot collection was skipped because the available profile data is stale after a failed Kaggle refresh."
 			);
 		}
+		await saveActivityObservations(trimmed, currentFoundation.activities);
 		const snapshot: Snapshot = {
 			id: `${trimmed}-${day}`,
 			username: trimmed,
@@ -251,6 +256,26 @@ export async function collectSnapshot(
 		);
 		throw error;
 	}
+}
+
+async function saveActivityObservations(
+	username: string,
+	activities: KaggleActivityRecord[]
+): Promise<void> {
+	const day = new Date().toISOString().slice(0, 10);
+	const observedAt = new Date().toISOString();
+	const observations: ActivityObservation[] = activities.map((activity) => ({
+		id: `${username.toLowerCase()}-${activity.id}-${day}`,
+		username,
+		activityId: activity.id,
+		type: activity.type,
+		title: activity.title,
+		description: activity.description,
+		language: activity.language,
+		activityDate: activity.date,
+		observedAt,
+	}));
+	await repository.saveActivityObservations(observations);
 }
 
 async function recordSnapshotAttempt(

@@ -29,12 +29,14 @@ Classifies each metric as `available`, `needs_collection`, or `blocked` per the 
 - Recent activity list.
 - Current-activity topic overlap in Fair Head-to-Head, based on currently returned public activity metadata only.
 - Notebook/dataset percentiles within a configured tracked-profile sample when at least 30 usable snapshots exist. These are sample-relative, not Kaggle-wide percentiles.
+- First-observed notebook/dataset topic catalog counts for configured profiles; these measure collection visibility, not Kaggle publication trends.
 
 ## What needs collection
 
 - Historical growth over 7, 30, 90, or 365 days, only when snapshots span the requested interval and the metric is present in both snapshots.
 - Scheduled daily snapshots for profiles in `KAGGLE_TRACKED_USERS`, using an external scheduler to call the protected snapshot endpoint.
 - More reliable and better-covered cohort distributions as the configured tracked sample grows.
+- At least 180 days of tracked topic observations before any topic direction may be shown.
 
 ## What is blocked
 
@@ -42,3 +44,4 @@ Classifies each metric as `available`, `needs_collection`, or `blocked` per the 
 - First 12/24/36-month Fair Head-to-Head metrics until registration dates and complete historical contribution records are available. Current latest-run/update timestamps do not prove creation dates.
 - Durable deployed history on ephemeral/serverless storage until the JSON repository is replaced with a durable database or shared volume.
 - Registration-year, tier, specialization, or account-age cohorts until Kaggle provides those fields and the tracked population has sufficient coverage.
+- Historical topic publication trends and personal adoption timing because publication timestamps and full historical catalog metadata are unavailable.

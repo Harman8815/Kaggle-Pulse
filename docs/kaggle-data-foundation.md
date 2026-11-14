@@ -65,6 +65,7 @@ Repository interface `KaggleRepository` with methods for raw responses, profiles
 - `POST /api/kaggle/snapshots` supports an external daily scheduler. Configure `CRON_SECRET` and a comma-separated `KAGGLE_TRACKED_USERS`, then send `Authorization: Bearer <CRON_SECRET>`. The endpoint returns per-user success/failure results; it processes users sequentially.
 - Snapshot collection attempts are persisted in freshness metadata, including a cumulative failure count, last attempt time, and last error. A successful attempt clears the last error without clearing the cumulative failure count.
 - Stale cached profile data is never timestamped as a new snapshot after a failed Kaggle refresh; the failed attempt is recorded instead.
+- Successful profile snapshots also retain a daily observation record for each returned notebook/dataset, keyed by user, activity, and UTC observation day. Observation data is retained for up to 730 days.
 - The scheduled endpoint does not itself create a scheduler. Configure one in the hosting platform to call it once per day.
 - Snapshot writes currently use the JSON repository. The host must provide durable shared filesystem storage for history to persist; ephemeral or multi-instance/serverless deployments need a database or shared persistent volume.
 - Current profile integration does not return registration date, follower count, rank, tier, or competition participation. These remain `null` in snapshots and are shown as unavailable.
@@ -86,3 +87,12 @@ The comparison and history views are available at `/compare` and `/history/<user
 - Current list endpoints return at most 100 records per contribution type. Notebook/dataset counts are therefore observed listing counts, not guaranteed complete totals.
 - Registration year, account age, tier, specialization, activity consistency, and competition cohorts are unavailable and are not inferred.
 - The comparison page is `/cohorts`. Until the minimum sample exists, it explains the sample shortfall rather than presenting a synthetic distribution.
+
+## Topic Pulse
+
+`GET /api/kaggle/pulse` analyzes first-observed catalog items for the configured tracked profiles. `collectSnapshot` stores activity metadata alongside the daily profile snapshot. The `/pulse` page reports observation coverage and monthly first-observed item counts.
+
+- Observation timestamps record when this application saw an item; Kaggle `lastRunTime` and `lastUpdated` are not publication dates.
+- Direction comparisons require 30 configured/observed profiles, at least 180 days of observations, and at least five classified unique items for the topic in each 90-day comparison window.
+- Supported direction describes first-observed catalog volume in the configured sample only. It is not a Kaggle-wide publication trend, user adoption date, or early-adopter classification.
+- Observation records are retained for 730 days; a durable shared store is required for continuity across deployments.

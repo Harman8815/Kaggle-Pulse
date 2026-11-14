@@ -11,6 +11,7 @@ export const Navbar = () => (
                 <Link href="/compare">Compare</Link>
                 <Link href="/history">History</Link>
                 <Link href="/cohorts">Cohorts</Link>
+                <Link href="/pulse">Pulse</Link>
             </div>
             <span className="topbar-caption">CREATOR DASHBOARD</span>
         </div>

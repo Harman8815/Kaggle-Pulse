@@ -61,3 +61,4 @@ Both stored as ISO UTC strings. Downstream heatmap/monthly builders depend on `d
 - Historical growth is reported only when genuine snapshots span the requested interval; existing Kaggle totals are not used to reconstruct earlier values.
 - Fair account-age windows remain unavailable until registration dates and complete historical contribution records can be verified.
 - Cohort percentiles can only describe the configured tracked sample once at least 30 profiles have valid daily metric snapshots; the sample is not assumed to represent all Kaggle users.
+- Topic observations capture the time this app first saw a returned item, not the item's publication date. Trend direction is therefore limited to first-observed catalog growth in the configured sample.

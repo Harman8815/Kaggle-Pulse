@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import type {
 	DataFreshness,
+	ActivityObservation,
 	KaggleActivityRecord,
 	KaggleUserProfile,
 	RawKaggleResponse,
@@ -17,6 +18,7 @@ const FILES = {
 	activities: "activities.json",
 	snapshots: "snapshots.json",
 	freshness: "freshness.json",
+	observations: "activity-observations.json",
 } as const;
 
 async function ensureDir(): Promise<void> {
@@ -91,6 +93,37 @@ export class JsonKaggleRepository implements KaggleRepository {
 
 	async getUserProfiles(): Promise<KaggleUserProfile[]> {
 		return readJsonFile<KaggleUserProfile[]>(FILES.profiles, []);
+	}
+
+	async saveActivityObservations(
+		observations: ActivityObservation[]
+	): Promise<void> {
+		const existing = await readJsonFile<ActivityObservation[]>(
+			FILES.observations,
+			[]
+		);
+		const byId = new Map(existing.map((observation) => [observation.id, observation]));
+		for (const observation of observations) {
+			byId.set(observation.id, observation);
+		}
+		const retentionCutoff = Date.now() - 730 * 24 * 60 * 60 * 1000;
+		const retained = [...byId.values()].filter(
+			(observation) => Date.parse(observation.observedAt) >= retentionCutoff
+		);
+		await writeJsonFile(FILES.observations, retained);
+	}
+
+	async getActivityObservations(
+		usernames: string[]
+	): Promise<ActivityObservation[]> {
+		const included = new Set(usernames.map((username) => username.toLowerCase()));
+		const observations = await readJsonFile<ActivityObservation[]>(
+			FILES.observations,
+			[]
+		);
+		return observations.filter((observation) =>
+			included.has(observation.username.toLowerCase())
+		);
 	}
 
 	async saveActivities(
