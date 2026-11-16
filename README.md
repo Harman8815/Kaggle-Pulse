@@ -1,16 +1,16 @@
 # Kaggle Pulse
 
-A modern, interactive dashboard for visualizing public Kaggle activity. Built with Next.js 16, React 19, Three.js, and React Three Fiber.
+A modern dashboard for exploring public Kaggle creator activity and profiles. Built with Next.js 16, React 19, Three.js, and TypeScript.
 
 ## Features
 
-- **Interactive 2D/3D Heatmap** - GitHub-style contribution calendar with Three.js 3D visualization
-- **Dark/Light Mode** - Persisted theme preference with system detection
-- **Activity Visualizations** - Monthly charts, activity type breakdown, recent activity feed
-- **Public Profile Search** - Search any Kaggle username via `/username` route
-- **Server-side Caching** - 5-minute in-memory cache with CDN-friendly headers
-- **Responsive Design** - Mobile-first with ambient background decorations
-- **Accessibility** - Semantic HTML, ARIA labels, keyboard navigation, reduced motion support
+- **Creator Dashboard** - Profile overview, activity heatmap (2D/3D), stats, and recent contributions
+- **Profile Search** - View public activity for any Kaggle username
+- **Fair Head-to-Head** - Compare two creators with topic overlap and account-age context
+- **Personal History** - Track profile snapshots and growth over time
+- **Cohorts & Topic Pulse** - Tracked-sample percentiles and observed topic trends
+- **Network & Atlas** - Explore collaboration signals and tracked creator samples
+- **Theme & UX** - Light/dark mode, responsive UI, and accessible controls
 
 ## Tech Stack
 
