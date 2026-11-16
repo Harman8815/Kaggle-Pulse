@@ -1,73 +1,79 @@
 # Kaggle Pulse
 
-A modern dashboard for exploring public Kaggle creator activity and profiles. Built with Next.js 16, React 19, Three.js, and TypeScript.
+**Explore Kaggle creators, track contributions, compare profiles, and discover community trends.**
+
+Kaggle Pulse is an interactive dashboard for exploring public Kaggle creator activity and profile insights. It brings contribution tracking, creator comparisons, historical growth, and community analytics into one place.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" />
+  <img src="https://img.shields.io/badge/Three.js-3D-black?logo=threedotjs" />
+  <img src="https://img.shields.io/badge/License-MIT-green" />
+</p>
 
 ## Features
 
-- **Creator Dashboard** - Profile overview, activity heatmap (2D/3D), stats, and recent contributions
-- **Profile Search** - View public activity for any Kaggle username
-- **Fair Head-to-Head** - Compare two creators with topic overlap and account-age context
-- **Personal History** - Track profile snapshots and growth over time
-- **Cohorts & Topic Pulse** - Tracked-sample percentiles and observed topic trends
-- **Network & Atlas** - Explore collaboration signals and tracked creator samples
-- **Theme & UX** - Light/dark mode, responsive UI, and accessible controls
+| Feature | Description |
+|---|---|
+| Creator Dashboard | Profile overview, statistics, contribution heatmaps, and recent activity. |
+| Profile Search | Explore public Kaggle activity using any username. |
+| 2D & 3D Heatmaps | Visualize contribution activity through interactive heatmaps. |
+| Head-to-Head | Compare creators, topic overlap, and account-age context. |
+| Personal History | Track profile snapshots and growth over time. |
+| Cohorts & Topic Pulse | Explore tracked-sample percentiles and observed topic trends. |
+| Network & Atlas | Discover collaboration signals and creator communities. |
+| Responsive UI | Light/dark themes, accessible controls, and responsive layouts. |
+
+## Preview
+
+<!-- Add project screenshots here -->
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router, Turbopack)
-- **Runtime**: React 19, TypeScript
-- **3D Graphics**: Three.js, @react-three/fiber, @react-three/drei
-- **UI Components**: Radix UI Tooltip, custom CSS
-- **Styling**: Vanilla CSS with CSS custom properties
-- **API**: Next.js Route Handlers, Kaggle REST API
+- **Framework:** Next.js 16 (App Router)
+- **Frontend:** React 19, TypeScript
+- **3D Visualization:** Three.js, React Three Fiber, Drei
+- **UI:** Radix UI, Custom CSS
+- **API:** Next.js Route Handlers, Kaggle REST API
+- **Data:** Kaggle public profile and activity information
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.18+ or 20.9+
-- Kaggle account with API credentials
+- Node.js 20.9+
+- Kaggle account
+- Kaggle API token
 
 ### Installation
 
 ```bash
-# Clone the repository
 git clone <repository-url>
 cd kaggle-pulse
-
-# Install dependencies
 npm install
-
-# Configure environment variables
 cp .env.example .env.local
 ```
 
 ### Environment Variables
 
-Create a `.env.local` file in the project root:
+Configure `.env.local`:
 
 ```env
-# Required: Kaggle API credentials (server-side only)
 KAGGLE_API_TOKEN=your_kaggle_api_token
-
-# Optional: Default username for home page (client-safe)
 NEXT_PUBLIC_USERNAME=your_kaggle_username
 
-# Optional: Protect the daily snapshot endpoint and configure tracked profiles
-# CRON_SECRET=use-a-long-random-secret
-# KAGGLE_TRACKED_USERS=username_one,username_two
-
-# Optional: Persist foundation data on a writable filesystem (local/VPS)
-# KAGGLE_DATA_DIR=/var/data/kaggle-foundation
+# Optional
+CRON_SECRET=your_random_secret
+KAGGLE_TRACKED_USERS=username_one,username_two
+KAGGLE_DATA_DIR=/var/data/kaggle-foundation
 ```
 
-Get your API token from [Kaggle Account Settings](https://www.kaggle.com/settings/account) → "Create New Token".
+Generate your API token from [Kaggle Account Settings](https://www.kaggle.com/settings/account).
 
-For Netlify, set `KAGGLE_API_TOKEN` and `NEXT_PUBLIC_USERNAME` in the site environment variables. Do not set `KAGGLE_USERNAME` to the same value as `NEXT_PUBLIC_USERNAME`: the username is public and embedding the same value under a secret variable name can trigger Netlify's secrets scan. `KAGGLE_KEY` is not used by this app. Keep `.env.local` out of Git; if an API token was ever committed, revoke it in Kaggle and create a new one.
+Keep API credentials server-side. Never commit `.env.local` or expose your API token through client-side variables.
 
-Profile history snapshots are recorded once per UTC day when profile/history data is opened. On serverless/read-only deployments, filesystem persistence may be unavailable and history is kept only in-memory for the current runtime instance/session. For durable history, configure `KAGGLE_DATA_DIR` to a writable persistent volume or migrate the repository to a database-backed store. Scheduled collection can POST to `/api/kaggle/snapshots` with `CRON_SECRET` and `KAGGLE_TRACKED_USERS`.
-
-### Development
+### Run Locally
 
 ```bash
 npm run dev
@@ -82,167 +88,92 @@ npm run build
 npm start
 ```
 
-## Project Structure
-
-```
-app/
-├── [username]/           # Dynamic profile search page
-│   └── page.tsx
-├── api/kaggle/activity/  # Cached API route (accepts ?username=)
-│   └── route.ts
-├── components/
-│   ├── dashboard/        # Modular dashboard components
-│   │   ├── DashboardAttribution.tsx
-│   │   ├── DashboardHeader.tsx
-│   │   ├── DashboardSkeleton.tsx
-│   │   ├── Heatmap2D.tsx
-│   │   ├── Heatmap3D.tsx
-│   │   ├── HeatmapPanel.tsx
-│   │   ├── MonthlyChart.tsx
-│   │   ├── RecentActivityPanel.tsx
-│   │   ├── StatsGrid.tsx
-│   │   ├── TypesPanel.tsx
-│   │   ├── VisualizationGrid.tsx
-│   │   ├── types.ts
-│   │   └── utils.ts
-│   ├── Dashboard.tsx     # Main dashboard composition
-│   ├── Navbar.tsx
-│   └── Footer.tsx
-├── utils/api.ts          # Typed API client
-├── globals.css           # All styles
-├── layout.tsx
-└── page.tsx              # Home page (uses NEXT_PUBLIC_USERNAME)
-```
-
 ## Usage
 
-### Home Page (`/`)
+**Dashboard**
 
-Displays dashboard for `NEXT_PUBLIC_USERNAME` from environment. Configure in `.env.local`.
+Visit `/` to explore the default Kaggle profile configured through `NEXT_PUBLIC_USERNAME`.
 
-### Profile Search (`/[username]`)
+**Profile Search**
 
-Visit `/any-username` to view any public Kaggle profile. Includes search form with disclaimer.
+Visit `/<username>` to explore another public Kaggle creator.
 
-### API Endpoint
+Example:
 
+```text
+https://your-domain.com/username
 ```
+
+**API Endpoint**
+
+```http
 GET /api/kaggle/activity?username=targetuser
 ```
 
-Returns cached activity data. Cache TTL: 5 minutes.
+Returns profile activity, contribution statistics, and cached data.
 
-Response:
-```json
-{
-  "username": "targetuser",
-  "profileUrl": "https://www.kaggle.com/targetuser",
-  "activities": [...],
-  "stats": { "total": 42, "notebooks": 20, "datasets": 22, ... },
-  "cached": false
-}
-```
+## Project Structure
 
-## 3D Heatmap Controls
-
-| Control | Action |
-|---------|--------|
-| Mouse drag | Rotate camera |
-| Scroll | Zoom in/out |
-| Right-click drag | Pan |
-| **Zoom In** button | Dolley in 1.2x |
-| **Zoom Out** button | Dolley out 1.2x |
-| **Reset** button | Return to default view |
-| **Pan Toggle** | Enable/disable panning |
-| **Top-Down** | Bird's-eye view |
-| **Default** | Reset to angled view |
-
-Tooltips auto-close after 3 seconds.
-
-## Customization
-
-### 3D Configuration
-
-```typescript
-// In Heatmap3D component
-const config: Partial<Heatmap3DConfig> = {
-  camera: { position: [0, 150, 150], fov: 40 },
-  orbitControls: { minDistance: 10, maxDistance: 800 },
-  lights: { ambientIntensity: 0.6, directionalIntensity: 1 }
-};
-```
-
-### Theme Colors
-
-CSS custom properties in `globals.css`:
-```css
-:root {
-  --primary: #16835d;
-  --bg-light: #f6f8f7;
-  --bg-dark: #101713;
-  /* ... */
-}
+```text
+app/
+├── [username]/             # Dynamic profile search
+├── api/
+│   └── kaggle/
+│       ├── activity/       # Activity API
+│       └── snapshots/      # Historical snapshots
+├── components/
+│   ├── dashboard/          # Dashboard visualizations
+│   ├── Dashboard.tsx
+│   ├── Navbar.tsx
+│   └── Footer.tsx
+├── utils/
+│   └── api.ts
+├── globals.css
+├── layout.tsx
+└── page.tsx
 ```
 
 ## Deployment
 
-### Vercel (Recommended)
+Kaggle Pulse supports deployment on platforms such as **Vercel** and **Netlify**.
 
-1. Push to GitHub
-2. Import in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy
+1. Push the project to GitHub.
+2. Import the repository into your deployment platform.
+3. Configure the required environment variables.
+4. Build and deploy.
 
-### Docker
-
-```dockerfile
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-## Environment Variables Reference
-
-| Variable | Required | Scope | Description |
-|----------|----------|-------|-------------|
-| `KAGGLE_USERNAME` | Yes | Server | Kaggle username for API auth |
-| `KAGGLE_API_TOKEN` | Yes | Server | Current API token from Kaggle |
-| `NEXT_PUBLIC_USERNAME` | No | Client | Default username for home page |
-| `CRON_SECRET` | No | Server | Bearer token protecting scheduled snapshot collection |
-| `KAGGLE_TRACKED_USERS` | No | Server | Comma-separated usernames collected by the daily snapshot endpoint |
-
-## API Rate Limits
-
-Kaggle API limits: ~100 requests/minute. The 5-minute cache prevents excessive calls. Dashboard loads 2 API calls (notebooks + datasets).
+**Note:** Historical snapshots require persistent storage for reliable long-term retention. Serverless filesystem storage may be temporary. Configure a persistent volume or database-backed storage for durable history.
 
 ## Accessibility
 
-- WCAG 2.1 AA contrast ratios
-- Keyboard navigable (Tab, Enter, Escape)
-- ARIA labels on all interactive elements
-- `prefers-reduced-motion` disables animations
-- Semantic HTML structure
-- Screen reader compatible
-
-## License
-
-MIT License - see LICENSE file for details.
+- Keyboard navigation support.
+- Accessible interactive controls and ARIA labels.
+- Reduced-motion support.
+- Responsive layouts.
+- Semantic HTML structure.
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make changes with tests
-4. Submit a pull request
+Contributions are welcome!
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes and test them.
+4. Submit a pull request.
 
 ## Acknowledgments
 
-- [Kaggle API](https://www.kaggle.com/docs/api) for data
-- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) for 3D
-- [Radix UI](https://www.radix-ui.com/) for accessible primitives
-- [Next.js](https://nextjs.org/) for the framework
+- [Kaggle API](https://www.kaggle.com/docs/api)
+- [Next.js](https://nextjs.org/)
+- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
+- [Radix UI](https://www.radix-ui.com/)
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+<p align="center">
+  Built with curiosity for the Kaggle community.
+</p>
