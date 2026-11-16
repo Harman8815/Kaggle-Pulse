@@ -1830,14 +1830,14 @@ html[data-theme="dark"] .skeleton-activity {
     gap: 3px;
   }
 }
-
 .dashboard-tab-navigation {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 2fr);
+  grid-template-columns: 5fr 2fr;
   gap: 10px;
   margin-bottom: 20px;
   border: 1px solid #e3eae5;
   border-radius: 12px;
+  column-gap: 52px;
   padding: 7px;
   background: rgb(255 255 255 / 84%);
   box-shadow: 0 4px 18px rgb(29 52 40 / 3%);
@@ -1852,6 +1852,12 @@ html[data-theme="dark"] .skeleton-activity {
 
 .dashboard-tab-group-primary {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-column: 1;
+}
+
+.dashboard-tab-group:last-child {
+  grid-column: 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .dashboard-tab {

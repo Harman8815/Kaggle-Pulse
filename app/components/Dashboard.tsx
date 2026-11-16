@@ -29,12 +29,8 @@ import { ClassificationPanel } from "./dashboard/consistency/ClassificationPanel
 interface DashboardProps {
     username?: string;
 }
-
 const dashboardTabGroups = [
-    [
-        { id: "stats", label: "Stats" },
-        { id: "activity", label: "Activity" },
-    ],
+
     [
         { id: "overview", label: "Overview" },
         { id: "trends", label: "Trends" },
@@ -43,10 +39,11 @@ const dashboardTabGroups = [
         { id: "specialization", label: "Specialization" },
     ],
     [
-        { id: "recent", label: "Recent" },
-        { id: "more", label: "More" },
+        { id: "recent", label: "Recent Activity" },
+        { id: "more", label: "Explore" },
     ],
 ] as const;
+
 
 const dashboardTabs = dashboardTabGroups.flat();
 type DashboardTabId = (typeof dashboardTabs)[number]["id"];
@@ -146,25 +143,6 @@ export const Dashboard = ({ username }: DashboardProps) => {
 
     const renderActiveTab = () => {
         switch (activeTab) {
-            case "stats":
-                return (
-                    <section className="panel">
-                        <div className="panel-heading">
-                            <div><h2>Contribution totals</h2><p>A detailed count of each activity type</p></div>
-                        </div>
-                        <div className="stats-grid">
-                            {typeCounts.map(({ type, count }) => (
-                                <article className="stat-card" key={type}>
-                                    <div className="stat-topline"><span>{type === "Notebook" ? "Notebooks" : `${type}s`}</span></div>
-                                    <strong>{loading ? "—" : count}</strong>
-                                    <span className="stat-footnote">Public contributions</span>
-                                </article>
-                            ))}
-                        </div>
-                    </section>
-                );
-            case "activity":
-                return <HeatmapPanel heatmap={heatmap} loading={loading} />;
             case "overview":
                 return (
                     <>
@@ -337,7 +315,7 @@ export const Dashboard = ({ username }: DashboardProps) => {
                 >
                     {dashboardTabGroups.map((group, groupIndex) => (
                         <div
-                            className={`dashboard-tab-group${groupIndex === 1 ? " dashboard-tab-group-primary" : ""}`}
+                            className={`dashboard-tab-group${groupIndex === 0 ? " dashboard-tab-group-primary" : ""}`}
                             key={groupIndex}
                         >
                             {group.map((tab) => {
