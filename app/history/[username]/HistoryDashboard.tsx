@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import type {
 	DataFreshness,
 	HistoryResult,
+	Snapshot,
 } from "../../lib/kaggle-foundation/schemas";
+import { buildHistoryResult } from "../../lib/kaggle-foundation/history";
 import { Footer } from "../../components/Footer";
 import { Navbar } from "../../components/Navbar";
 
@@ -23,6 +25,46 @@ interface HistoryResponse {
 	freshness: DataFreshness;
 }
 
+const STORAGE_PREFIX = "kaggle-pulse:history:";
+
+function readStoredSnapshots(username: string): Snapshot[] {
+	if (typeof window === "undefined") return [];
+	try {
+		const raw = window.sessionStorage.getItem(`${STORAGE_PREFIX}${username.toLowerCase()}`);
+		if (!raw) return [];
+		const parsed = JSON.parse(raw) as { snapshots?: Snapshot[] } | Snapshot[];
+		const snapshots = Array.isArray(parsed) ? parsed : parsed.snapshots;
+		return Array.isArray(snapshots) ? snapshots : [];
+	} catch {
+		return [];
+	}
+}
+
+function writeStoredSnapshots(username: string, snapshots: Snapshot[]) {
+	if (typeof window === "undefined") return;
+	try {
+		window.sessionStorage.setItem(
+			`${STORAGE_PREFIX}${username.toLowerCase()}`,
+			JSON.stringify({ snapshots, updatedAt: new Date().toISOString() })
+		);
+	} catch {
+		// Ignore storage quota/privacy errors.
+	}
+}
+
+function mergeSnapshots(...groups: Snapshot[][]): Snapshot[] {
+	const byKey = new Map<string, Snapshot>();
+	for (const group of groups) {
+		for (const snapshot of group) {
+			const key = snapshot.id || `${snapshot.username}-${snapshot.day}`;
+			byKey.set(key, snapshot);
+		}
+	}
+	return [...byKey.values()].sort(
+		(a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp)
+	);
+}
+
 export default function HistoryDashboard({ username }: { username: string }) {
 	const [result, setResult] = useState<HistoryResponse | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -31,6 +73,7 @@ export default function HistoryDashboard({ username }: { username: string }) {
 	useEffect(() => {
 		const controller = new AbortController();
 		const loadHistory = async () => {
+			const stored = readStoredSnapshots(username);
 			try {
 				const query = new URLSearchParams({ username });
 				const response = await fetch(`/api/kaggle/history?${query}`, {
@@ -47,9 +90,35 @@ export default function HistoryDashboard({ username }: { username: string }) {
 							: "Could not load profile history.";
 					throw new Error(message);
 				}
-				setResult(body as HistoryResponse);
+				const parsed = body as HistoryResponse;
+				const mergedSnapshots = mergeSnapshots(stored, parsed.history.snapshots);
+				writeStoredSnapshots(username, mergedSnapshots);
+				setResult({
+					...parsed,
+					history: buildHistoryResult(username, mergedSnapshots),
+				});
 			} catch (requestError) {
-				if (requestError instanceof Error && requestError.name !== "AbortError") {
+				if (requestError instanceof Error && requestError.name === "AbortError") return;
+				if (stored.length > 0) {
+					setResult((prev) => prev ?? {
+						history: buildHistoryResult(username, stored),
+						profile: { followers: null, rank: null, tier: null },
+						availability: { followers: "unavailable", rank: "unavailable", tier: "unavailable" },
+						freshness: {
+							username,
+							lastSuccessfulFetch: null,
+							lastActivityUpdate: null,
+							lastAnalyticsCalculation: null,
+							fetchFailures: 0,
+							snapshotCollectionFailures: 0,
+							lastSnapshotAttempt: null,
+							lastSnapshotError: null,
+							incompleteDatasets: [],
+							cacheExpiresAt: null,
+						},
+					});
+					setError(requestError instanceof Error ? requestError.message : "Could not load profile history.");
+				} else if (requestError instanceof Error) {
 					setError(requestError.message);
 				}
 			} finally {
@@ -79,9 +148,9 @@ export default function HistoryDashboard({ username }: { username: string }) {
 					<div>
 						<div className="eyebrow"><span className="status-dot" /> PERSONAL HISTORY</div>
 						<h1>{username}&apos;s profile history</h1>
-						<p className="dashboard-subtitle">
-							Genuine changes from collected daily snapshots. Missing values are never treated as zero.
-						</p>
+							<p className="dashboard-subtitle">
+								Genuine changes from collected daily snapshots. Snapshots are cached in this browser session and, when available, on the server. Missing values are never treated as zero.
+							</p>
 					</div>
 				</section>
 

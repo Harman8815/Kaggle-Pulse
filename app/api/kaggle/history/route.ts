@@ -19,18 +19,31 @@ export async function GET(request: NextRequest) {
 	}
 
 	try {
-		await collectSnapshot(username);
 		const { foundation } = await getUserFoundation(username);
-		const snapshots = await repository.getSnapshots(username);
-		const freshness = await repository.getFreshness(username);
-		if (!freshness) {
-			throw new Error("Snapshot collection status was not persisted.");
+
+		let snapshotCollection: { status: "saved" | "failed"; message?: string } = { status: "saved" };
+		try {
+			await collectSnapshot(username, foundation);
+		} catch (error) {
+			snapshotCollection = {
+				status: "failed",
+				message: error instanceof Error ? error.message : "Snapshot collection failed",
+			};
 		}
+
+		const [snapshots, freshness] = await Promise.all([
+			repository.getSnapshots(username),
+			repository.getFreshness(username),
+		]);
+
+		const safeFreshness = freshness ?? foundation.freshness;
+
 		return NextResponse.json({
 			history: buildHistoryResult(username, snapshots),
 			profile: foundation.profile,
 			availability: foundation.availability,
-			freshness,
+			freshness: safeFreshness,
+			snapshotCollection,
 		});
 	} catch (error) {
 		console.error(`Kaggle history request failed for ${username}:`, error);
