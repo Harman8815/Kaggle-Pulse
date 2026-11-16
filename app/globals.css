@@ -1027,7 +1027,9 @@ html[data-theme="dark"] .empty-state {
 html[data-theme="dark"] .activity-type-mark {
   background: #25312a;
 }
-
+html[data-theme="dark"] .archetype-coverage-heading {
+  color: #dce7df;
+}
 html[data-theme="dark"] .activity-details strong {
   color: #d5e0d8;
 }
@@ -2654,6 +2656,101 @@ html[data-theme="dark"] .archetype-coverage-missing {
 
 html[data-theme="dark"] .archetype-baseline {
   color: #87958c;
+}
+
+html[data-theme="dark"] .rhythm-metric,
+html[data-theme="dark"] .trend-card,
+html[data-theme="dark"] .classification-card {
+  border-color: #34443a;
+  background: #1b2620;
+}
+
+html[data-theme="dark"] .rhythm-metric span,
+html[data-theme="dark"] .rhythm-coverage,
+html[data-theme="dark"] .rhythm-note,
+html[data-theme="dark"] .rhythm-explanation,
+html[data-theme="dark"] .classification-card p,
+html[data-theme="dark"] .weekday-value,
+html[data-theme="dark"] .trend-label,
+html[data-theme="dark"] .trend-range,
+html[data-theme="dark"] .distribution-axis,
+html[data-theme="dark"] .gap-meta span,
+html[data-theme="dark"] .behavioral-summary-text {
+  color: #87958c;
+}
+
+html[data-theme="dark"] .rhythm-metric strong,
+html[data-theme="dark"] .trend-card strong,
+html[data-theme="dark"] .classification-header strong,
+html[data-theme="dark"] .rhythm-subsection h3 {
+  color: #e5eee8;
+}
+
+html[data-theme="dark"] .gap-track,
+html[data-theme="dark"] .weekday-track {
+  background: #2a362f;
+}
+
+html[data-theme="dark"] .distribution-bar {
+  background: #36ba7a;
+}
+
+html[data-theme="dark"] .gap-bar {
+  background: #5e7568;
+}
+
+html[data-theme="dark"] .gap-bar.is-significant {
+  background: #d9a441;
+}
+
+html[data-theme="dark"] .weekday-bar {
+  background: #84a5ff;
+}
+
+html[data-theme="dark"] .rhythm-collapse-btn {
+  border-color: #34443a;
+  background: #2c4033;
+  color: #d1ded5;
+}
+
+html[data-theme="dark"] .rhythm-collapse-btn:hover {
+  border-color: #567362;
+  background: #385442;
+}
+
+html[data-theme="dark"] .rhythm-badge {
+  background: #1c3b2d;
+  color: #7bd5a5;
+}
+
+html[data-theme="dark"] .rhythm-badge-burst-oriented {
+  background: #3a2f1a;
+  color: #f0c36d;
+}
+
+html[data-theme="dark"] .rhythm-badge-irregular {
+  background: #302544;
+  color: #c9a8f0;
+}
+
+html[data-theme="dark"] .confidence-low,
+html[data-theme="dark"] .confidence-insufficient {
+  background: #25312a;
+  color: #aab8af;
+}
+
+html[data-theme="dark"] .confidence-medium {
+  background: #202e45;
+  color: #84a5ff;
+}
+
+html[data-theme="dark"] .confidence-high {
+  background: #1c3b2d;
+  color: #7bd5a5;
+}
+
+html[data-theme="dark"] .rhythm-summary-panel .behavioral-summary-text {
+  color: #d5e0d8;
 }
 
 /* Stage 3: Specialization Fingerprint */
